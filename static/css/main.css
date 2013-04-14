@@ -1,0 +1,82 @@
+* {margin:0px; padding:0px;}
+
+a {
+    font-weight: bold;
+    color: rgb(132, 132, 219);
+}
+a:hover {
+    color: rgb(106, 91, 219);
+    text-decoration: none;
+    border-bottom: 1px dotted rgb(106, 91, 219);
+}
+nav a:hover{
+    text-decoration: none;
+    border-bottom: none;
+}
+.logged_username {
+    font-weight: bold;
+    color: rgb(132, 132, 219);
+    display:inline;
+}
+
+.top_status {
+    background-color: rgb(237, 236, 245);
+    padding: 5px 10px;
+    text-align: right;
+}
+
+header {
+    background-color: rgb(237, 236, 245);
+    border-top: 1px solid black;
+    color:rgb(84, 101, 224);
+    font-size: 26px;
+    height:80px;
+}
+
+.header-text{
+    padding: 30px 15px;
+}
+
+footer {
+    background-color: rgb(237, 236, 245);
+    height:30px;
+    font-size: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+nav {
+    background-color: rgb(248, 247, 253)
+}
+nav .navbar {
+    margin-bottom: 0px;
+}
+
+.main_content {
+    background-color: rgb(248, 247, 253);
+    padding: 20px;
+}
+
+section.my_recent_actions {
+    border: 1px solid #078697;
+    display: inline-block;
+    width: 340px;
+    background-color: white;
+    height: 200px;
+    float:left;
+    margin-left: 50px;
+}
+
+section.projects_changes{
+    border: 1px solid #078697;
+    display: inline-block;
+    width: 340px;
+    background-color: white;
+    height: 200px;
+    float:right;
+    margin-right: 50px;
+}
+
+.clear {
+    clear: both;
+}
