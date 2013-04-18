@@ -14,14 +14,17 @@ from Services.User import UserEntity
 
 
 from tornado.options import define, options
-define("port", default=8000, help="run on the given port", type=int)
+define("port", default=8080, help="run on the given port", type=int)
+
 
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [(r"/", IndexHandler),
-            (r"/(\w+)", HelloHandler),
             (r"/login", LoginHandler),
-            (r"/logout", LogoutHandler)]
+            (r"/logout", LogoutHandler),
+            (r"/projects", ProjectHandler),
+            (r"/issues", IssueHandler),
+            (r"/reports", ReportHandler)]
         settings = dict(template_path = os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             debug = True)
@@ -35,11 +38,6 @@ class IndexHandler(tornado.web.RequestHandler):
 
     def write_error(self, status_code, **kwargs):
         self.write("No method to handle request. Error code %d." %status_code)
-
-
-class HelloHandler(tornado.web.RequestHandler):
-    def get(self, name):
-        self.write('Hello %r', name)
 
 
 class LoginHandler(tornado.web.RequestHandler):
@@ -58,6 +56,22 @@ class LogoutHandler(tornado.web.RequestHandler):
     def get(self):
         self.clear_cookie("user")
         self.redirect(u"/login");
+
+
+class ProjectHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("projects.html");
+
+
+class IssueHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("issues.html");
+
+
+class ReportHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.render("reports.html");
+
 
 if __name__ == "__main__":
     DB.init()

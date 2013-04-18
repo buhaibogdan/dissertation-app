@@ -1,0 +1,37 @@
+{% extends "main.html" %}
+{% block nav%}
+<nav>
+    <div class="navbar">
+        <div class="navbar-inner">
+            <a class="brand" href="#">Menu</a>
+            <ul class="nav">
+                <li><a href="/">Home</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/issues">Issues</a></li>
+                <li class="active"><a href="#">Reports</a></li>
+            </ul>
+            <form class="navbar-search pull-right">
+                <input type="text" class="search-query" placeholder="Search">
+            </form>
+        </div>
+    </div>
+</nav>
+{% end %}
+{% block content %}
+<section class="my_recent_actions ">
+    <ul>
+        <li>Modified x</li>
+        <li>Modified y</li>
+    </ul>
+</section>
+<section class="projects_changes">
+    <ul>
+        <li>Modified x</li>
+        <li>Modified y</li>
+    </ul>
+</section>
+<div class="clear"></div>
+<p>Well this is the reports page!</p>
+this is some stuff
+</div>
+{% end %}
