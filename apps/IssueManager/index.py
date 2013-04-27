@@ -5,8 +5,9 @@ import tornado.options
 import tornado.web
 import random
 import tornado.template
-from Services.Database.db import DB
+from Services.Database.db import *
 
+import json
 from Services.Alert import AlertEntity
 from Services.Project import ProjectEntity
 from Services.Task import TaskEntity
@@ -34,7 +35,7 @@ class Application(tornado.web.Application):
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("index.html", name = "Bogdan")
+        self.render("index.html")
 
     def write_error(self, status_code, **kwargs):
         self.write("No method to handle request. Error code %d." %status_code)
@@ -60,7 +61,12 @@ class LogoutHandler(tornado.web.RequestHandler):
 
 class ProjectHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("projects.html");
+        from Services.Project.ProjectService import ProjectService
+        from Services.Task.TaskService import TaskService
+
+        projectService = ProjectService(TaskService())
+        projects = json.loads(projectService.getProjects())
+        self.render("projects.html", projects=projects);
 
 
 class IssueHandler(tornado.web.RequestHandler):

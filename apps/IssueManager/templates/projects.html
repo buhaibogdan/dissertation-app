@@ -18,17 +18,20 @@
 </nav>
 {% end %}
 {% block content %}
-<section class="my_recent_actions ">
-    <ul>
-        <li>Modified x</li>
-        <li>Modified y</li>
-    </ul>
+<section class="projects ">
+    <label class="project-name">Select project: </label>
+    <select>
+        {% for project in projects %}
+            <option value="{{project['pid']}}">{{ project['title'] }}</option>
+        {% end %}
+    </select>
 </section>
-<section class="projects_changes">
-    <ul>
-        <li>Modified x</li>
-        <li>Modified y</li>
-    </ul>
+<section class="project-info">
+    info here
+</section>
+
+<section class="project-stats">
+    stats here
 </section>
 <div class="clear"></div>
 <p>Well this is the projects page!</p>

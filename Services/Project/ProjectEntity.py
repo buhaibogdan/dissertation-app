@@ -2,7 +2,7 @@ from Services.Database.db import Base
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 
 
-class Project(Base):
+class ProjectEntity(Base):
     __tablename__ = 'Project'
     pid = Column(Integer, primary_key=True)
     title = Column(String(100))

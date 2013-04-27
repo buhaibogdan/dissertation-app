@@ -80,3 +80,30 @@ section.projects_changes{
 .clear {
     clear: both;
 }
+
+.project-name{
+    font-weight: bold;
+    color: #215297;
+    display:inline-block;
+    line-height: 8px;
+}
+.project-info {
+    display: inline-block;
+    width: 440px;
+    background-color: white;
+    height: 200px;
+    float:left;
+    margin-left: 10px;
+    padding:5px;
+}
+
+
+.project-stats {
+    border-left: 1px solid #078697;
+    display: inline-block;
+    width: 340px;
+    background-color: white;
+    height: 200px;
+    float:right;
+    margin-right: 50px;
+}
