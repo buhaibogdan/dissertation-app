@@ -16,11 +16,10 @@
 </head>
 <body>
 
-<div class="container">
-    {% block user_login %}
-    <div class="top_status">Logged in as <a href="javascript:void(0)">Bogdan Buhai</a></div>
-    {% end %}
     <header>
+        {% block user_login %}
+        <div class="top_status">Logged in as <a href="javascript:void(0)">Bogdan Buhai</a></div>
+        {% end %}
         <div class="header-text">Issue manager</div>
     </header>
     {% block nav%}
@@ -50,7 +49,5 @@
         </p>
     </footer>
     {% end %}
-</div>
-
 </body>
 </html>

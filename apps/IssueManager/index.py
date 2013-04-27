@@ -63,10 +63,14 @@ class ProjectHandler(tornado.web.RequestHandler):
     def get(self):
         from Services.Project.ProjectService import ProjectService
         from Services.Task.TaskService import TaskService
+        from Services.User.UserService import UserService
 
         projectService = ProjectService(TaskService())
         projects = json.loads(projectService.getProjects())
-        self.render("projects.html", projects=projects);
+
+        userService = UserService()
+        users = json.loads(userService.getUsers());
+        self.render("projects.html", projects=projects, users = users);
 
 
 class IssueHandler(tornado.web.RequestHandler):

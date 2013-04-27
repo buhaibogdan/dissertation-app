@@ -18,23 +18,68 @@
 </nav>
 {% end %}
 {% block content %}
-<section class="projects ">
+<section class="projects_list ">
     <label class="project-name">Select project: </label>
     <select>
         {% for project in projects %}
             <option value="{{project['pid']}}">{{ project['title'] }}</option>
         {% end %}
     </select>
+    <a href="#" id="project_new" class="project-new">Create new project</a>
 </section>
 <section class="project-info">
-    info here
+    <div class="row">
+        <div class="row-label">Title:</div>
+        <div class="row-value">{{projects[0]['title']}}</div>
+    </div>
+    <div class="row">
+        <div class="row-label">Owner:</div>
+        <div class="row-value">{{users[0]['username']}}</div>
+    </div>
+    <div class="row">
+        <div class="row-label">Description:</div>
+        <div class="row-value">{{projects[0]['description']}}</div>
+    </div>
+    <div class="row">
+        <div class="row-label">Release date:</div>
+        <div class="row-value">{{projects[0]['release_date']}}</div>
+    </div>
+    <div class="row">
+        <div class="row-label">People involved:</div>
+        <div class="row-value">x,y,z, t</div>
+    </div>
+
+
+    <div class="project-edit">
+        <a href="#" id="project_edit">Edit</a>
+    </div>
+    <form action="" method="post" name="project">
+        <input type="hidden" name="project_id" id="project_id" value="" />
+        <label>Project title</label>
+        <input type="text" id="project_title" name="project_title">
+        <label>Owner</label>
+        <select name="project_owner" id="project_owner">
+            <option value="0" selected="selected"></option>
+            {% for user in users%}
+            <option value="{{user['uid']}}">{{ user['username'] }}</option>
+            {% end %}
+        </select>
+        <label>Description</label>
+        <textarea rows="5" cols="25" name="project_description" id="project_description">
+        </textarea>
+        <label>Release date</label>
+        <input type="text" name="project_release" id="project_release"/>
+        <label class="checkbox">
+            <input type="checkbox" name="project_alert"> Send out email
+        </label>
+        <button type="submit" class="btn">Save</button>
+        <button type="button" class="btn">Cancel</button>
+    </form>
 </section>
 
 <section class="project-stats">
     stats here
 </section>
 <div class="clear"></div>
-<p>Well this is the projects page!</p>
-this is some stuff
 </div>
 {% end %}

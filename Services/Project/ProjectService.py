@@ -12,7 +12,10 @@ class ProjectService(object):
         p = []
         for project in projects:
             p.append({'pid':project.pid,
-                      'title':project.title})
+                      'title':project.title,
+                        'description':project.description,
+                        'owner':project.id_owner,
+                        'release_date':str(project.release_date)})
 
         return json.dumps(p)
 

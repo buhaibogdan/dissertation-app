@@ -27,14 +27,13 @@ nav a:hover{
 
 header {
     background-color: rgb(237, 236, 245);
-    border-top: 1px solid black;
-    color:rgb(84, 101, 224);
-    font-size: 26px;
     height:80px;
 }
 
 .header-text{
-    padding: 30px 15px;
+    color:rgb(84, 101, 224);
+    padding: 3px 30px;
+    font-size: 26px;
 }
 
 footer {
@@ -87,14 +86,28 @@ section.projects_changes{
     display:inline-block;
     line-height: 8px;
 }
+.projects_list {
+    width: 32%;
+    margin-left:10px;
+}
+.project-new {
+    float:right;
+    margin-top: 6px;
+}
+.project-edit{
+    float:right;
+    margin-right:18%
+}
+
+
 .project-info {
     display: inline-block;
-    width: 440px;
-    background-color: white;
-    height: 200px;
+    width: 32%;
+    background-color: rgb(167, 238, 241);
+    border-radius: 20px 15%;
     float:left;
     margin-left: 10px;
-    padding:5px;
+    padding:20px;
 }
 
 
@@ -106,4 +119,36 @@ section.projects_changes{
     height: 200px;
     float:right;
     margin-right: 50px;
+}
+
+.project-info textarea {
+    width:80%;
+}
+
+.project-info button {
+    width:75px;
+    margin: 5px;
+}
+.project-info label {
+    cursor: auto;
+}
+
+.row {
+    margin: 5px 7px;
+    background-color:rgb(238, 231, 179)
+}
+
+.row-label{
+    display: inline-block;
+    padding-right: 5px;
+    color: #6b6a68;
+    width: 115px;
+    text-align: right;
+    vertical-align: top;
+}
+
+.row-value {
+    display:inline-block;
+    width:150px;
+
 }
