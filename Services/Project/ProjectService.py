@@ -14,7 +14,7 @@ class ProjectService(object):
             p.append({'pid':project.pid,
                       'title':project.title,
                         'description':project.description,
-                        'owner':project.id_owner,
+                        'owner':project.owner.username,
                         'release_date':str(project.release_date)})
 
         return json.dumps(p)

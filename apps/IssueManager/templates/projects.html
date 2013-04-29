@@ -30,23 +30,28 @@
 <section class="project-info">
     <div class="row">
         <div class="row-label">Title:</div>
-        <div class="row-value">{{projects[0]['title']}}</div>
+        <div class="row-value">{{projects[1]['title']}}</div>
     </div>
     <div class="row">
         <div class="row-label">Owner:</div>
-        <div class="row-value">{{users[0]['username']}}</div>
+        <div class="row-value">{{projects[1]['owner']}}</div>
     </div>
     <div class="row">
         <div class="row-label">Description:</div>
-        <div class="row-value">{{projects[0]['description']}}</div>
+        <div class="row-value">{{projects[1]['description']}}</div>
     </div>
     <div class="row">
         <div class="row-label">Release date:</div>
-        <div class="row-value">{{projects[0]['release_date']}}</div>
+        <div class="row-value">{{projects[1]['release_date']}}</div>
     </div>
     <div class="row">
         <div class="row-label">People involved:</div>
-        <div class="row-value">x,y,z, t</div>
+        <div class="row-value">
+            {% for userInvolved in usersInvolved %}
+                {% module UserLinkModule(userInvolved) %}{% if userInvolved != usersInvolved[-1] %},
+                {% end %}
+            {% end %}
+        </div>
     </div>
 
 
@@ -61,7 +66,7 @@
         <select name="project_owner" id="project_owner">
             <option value="0" selected="selected"></option>
             {% for user in users%}
-            <option value="{{user['uid']}}">{{ user['username'] }}</option>
+                <option value="{{user['uid']}}">{{ user['username'] }}</option>
             {% end %}
         </select>
         <label>Description</label>
@@ -78,7 +83,7 @@
 </section>
 
 <section class="project-stats">
-    stats here
+    {% module ProjectInfoModule() %}
 </section>
 <div class="clear"></div>
 </div>

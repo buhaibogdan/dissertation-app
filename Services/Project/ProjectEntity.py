@@ -1,5 +1,6 @@
 from Services.Database.db import Base
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 
 
 class ProjectEntity(Base):
@@ -7,7 +8,8 @@ class ProjectEntity(Base):
     pid = Column(Integer, primary_key=True)
     title = Column(String(100))
     description = Column(String(600))
-    id_owner = Column(Integer, primary_key=True)
+    id_owner = Column(Integer, ForeignKey('User.uid'))
+    owner = relationship('UserEntity')
     release_date = Column(DateTime)
 
     def __init__(self, title, description, id_owner):
