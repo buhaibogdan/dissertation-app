@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Boolean
 
 
 class UserEntity(Base):
-    __tablename__ = 'User'
+    __tablename__ = 'user'
     uid = Column(Integer, primary_key=True)
     username = Column(String(50))
     password = Column(String(100))

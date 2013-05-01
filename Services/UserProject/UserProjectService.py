@@ -1,7 +1,7 @@
 from UserProjectEntity import UserProjectEntity
-from Services.Database.db import DB, db_session, engine
-from Services.Project.ProjectEntity import ProjectEntity
+from Services.Database.db import db_session
 import json
+
 
 class UserProjectService(object):
 
@@ -22,10 +22,5 @@ class UserProjectService(object):
         Returns all users that are involved in a project.
     '''
     def getUsersForProject(self, pid):
-        users = db_session.query(UserProjectEntity).filter( UserProjectEntity.pid == pid ).all()
-        users_list = []
-        for user in users:
-            users_list.append({'uid':user.uid,
-                               'username':user.users.username})
-
-        return json.dumps(users_list)
+        usersInvolved = db_session.query(UserProjectEntity).filter(UserProjectEntity.pid == pid).all()
+        return usersInvolved

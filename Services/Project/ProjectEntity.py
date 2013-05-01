@@ -1,14 +1,14 @@
 from Services.Database.db import Base
 from sqlalchemy.orm import relationship
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
-
+from Services.User.UserEntity import UserEntity
 
 class ProjectEntity(Base):
-    __tablename__ = 'Project'
+    __tablename__ = 'project'
     pid = Column(Integer, primary_key=True)
     title = Column(String(100))
     description = Column(String(600))
-    id_owner = Column(Integer, ForeignKey('User.uid'))
+    id_owner = Column(Integer, ForeignKey('user.uid'))
     owner = relationship('UserEntity')
     release_date = Column(DateTime)
 

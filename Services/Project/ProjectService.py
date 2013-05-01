@@ -1,6 +1,6 @@
 from ProjectEntity import ProjectEntity
 from Services.Database.db import DB, db_session, engine
-import json
+
 
 class ProjectService(object):
 
@@ -9,18 +9,14 @@ class ProjectService(object):
 
     def getProjects(self):
         projects = db_session.query(ProjectEntity).all()
-        p = []
-        for project in projects:
-            p.append({'pid':project.pid,
-                      'title':project.title,
-                        'description':project.description,
-                        'owner':project.owner.username,
-                        'release_date':str(project.release_date)})
 
-        return json.dumps(p)
+        for project in projects:
+            project.release_date = str(project.release_date)
+        return projects
 
     def getProject(self, id):
-        pass
+        project = db_session.query(ProjectEntity).filter(ProjectEntity.pid == id).first()
+        return project
 
     def saveProject(self, newProject):
         pass

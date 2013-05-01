@@ -3,7 +3,7 @@ from sqlalchemy import Column, Integer, String, DateTime, Boolean
 
 
 class Task(Base):
-    __tablename__ = 'Task'
+    __tablename__ = 'task'
     id = Column(Integer, primary_key=True)
     title = Column(String(100))
     description = Column(String(600))

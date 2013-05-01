@@ -1,20 +1,18 @@
+import sys
+sys.path.append('/home/bb/PycharmProjects/dissertation-app')
+
 import os.path
 import tornado.httpserver
 import tornado.ioloop
 import tornado.options
 import tornado.web
-import random
 import tornado.template
 from Services.Database.db import *
 import apps.IssueManager.ui_modules.modules
-import pprint
-
+import requests
 import json
-from Services.Alert import AlertEntity
-from Services.Project import ProjectEntity
-from Services.Task import TaskEntity
-from Services.User import UserEntity
-from Services.UserProject import UserProjectEntity
+from conf.conf import webServicesAddress
+#from Services.UserProject import UserProjectEntity
 
 
 from tornado.options import define, options
@@ -23,15 +21,15 @@ define("port", default=8000, help="run on the given port", type=int)
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [(r"/", IndexHandler),
-            (r"/login", LoginHandler),
-            (r"/logout", LogoutHandler),
-            (r"/projects", ProjectHandler),
-            (r"/issues", IssueHandler),
-            (r"/reports", ReportHandler)]
+                    (r"/login", LoginHandler),
+                    (r"/logout", LogoutHandler),
+                    (r"/projects", ProjectHandler),
+                    (r"/issues", IssueHandler),
+                    (r"/reports", ReportHandler)]
         settings = dict(template_path = os.path.join(os.path.dirname(__file__), "templates"),
-            static_path=os.path.join(os.path.dirname(__file__), "static"),
-            debug = True,
-            ui_modules=apps.IssueManager.ui_modules.modules)
+                        static_path=os.path.join(os.path.dirname(__file__), "static"),
+                        debug = True,
+                        ui_modules=apps.IssueManager.ui_modules.modules)
 
         tornado.web.Application.__init__(self, handlers, **settings)
 
@@ -64,29 +62,28 @@ class LogoutHandler(tornado.web.RequestHandler):
 
 class ProjectHandler(tornado.web.RequestHandler):
     def get(self):
-        from Services.Project.ProjectService import ProjectService
-        from Services.Task.TaskService import TaskService
-        from Services.User.UserService import UserService
-        from Services.UserProject.UserProjectService import UserProjectService
+        projectURL = webServicesAddress['project']
+        projectsJson = requests.get(projectURL).content
+        projects = json.loads(projectsJson)
 
-        projectService = ProjectService(TaskService())
-        projects = json.loads(projectService.getProjects())
+        usersInvolvedJson = requests.get(projectURL + str(projects[0]['pid']) + "/involvement").content
+        usersInvolved = json.loads(usersInvolvedJson)
 
-        userService = UserService()
-        userProjectService = UserProjectService();
-        users = json.loads(userService.getUsers());
-        usersInvolved = json.loads(userProjectService.getUsersForProject(projects[0]['pid']))
-        self.render("projects.html", projects=projects, users = users, usersInvolved = usersInvolved);
+        #userService = UserService()
+        #userProjectService = UserProjectService()
+        users = []#json.loads(userService.getUsers())
+
+        self.render("projects.html", projects=projects, users=users, usersInvolved=usersInvolved);
 
 
 class IssueHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("issues.html");
+        self.render("issues.html")
 
 
 class ReportHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("reports.html");
+        self.render("reports.html")
 
 
 if __name__ == "__main__":
