@@ -9,13 +9,15 @@ import tornado.web
 import tornado.template
 from Services.Database.db import *
 import apps.IssueManager.ui_modules.modules
-import requests
-import json
-from conf.conf import webServicesAddress
-#from Services.UserProject import UserProjectEntity
 
+from Services.UserProject.UserProjectService import UserProjectService
+from Services.Project.ProjectService import ProjectService
+from Services.Project.ProjectDAO import ProjectDAO
+from Services.User.UserDAO import UserDAO
+from Services.User.UserService import UserService
 
 from tornado.options import define, options
+
 define("port", default=8000, help="run on the given port", type=int)
 
 class Application(tornado.web.Application):
@@ -62,18 +64,16 @@ class LogoutHandler(tornado.web.RequestHandler):
 
 class ProjectHandler(tornado.web.RequestHandler):
     def get(self):
-        projectURL = webServicesAddress['project']
-        projectsJson = requests.get(projectURL).content
-        projects = json.loads(projectsJson)
 
-        usersInvolvedJson = requests.get(projectURL + str(projects[0]['pid']) + "/involvement").content
-        usersInvolved = json.loads(usersInvolvedJson)
+        projectsService = ProjectService(ProjectDAO())
+        userProjectService = UserProjectService()
+        userService = UserService(UserDAO())
 
-        #userService = UserService()
-        #userProjectService = UserProjectService()
-        users = []#json.loads(userService.getUsers())
+        projects = projectsService.getProjects()
+        users = userService.getUsers()
+        usersInvolved = userProjectService.getUsersForProject(1)
 
-        self.render("projects.html", projects=projects, users=users, usersInvolved=usersInvolved);
+        self.render("projects.html", projects=projects, users=users, usersInvolved=usersInvolved)
 
 
 class IssueHandler(tornado.web.RequestHandler):

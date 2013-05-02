@@ -1,23 +1,15 @@
-from UserEntity import UserEntity
-from Services.Database.db import DB, db_session, engine
 
 
 class UserService(object):
 
-    def __init__(self):
-        pass
+    def __init__(self, userDAO):
+        self.__DAO = userDAO
 
     def getUsers(self):
-        users = db_session.query(UserEntity).all()
-        for user in users:
-            user.last_connect = str(user.last_connect)
-        return users
+        return self.__DAO.getAllUsers()
 
     def getUserById(self, id):
-        pass
+        return self.__DAO.getUser(id)
 
     def getUserByUsername(self, username):
-        pass
-
-    def saveProject(self, newProject):
-        pass
+        return self.__DAO.getUserByUsername(username)

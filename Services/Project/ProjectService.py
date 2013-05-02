@@ -1,22 +1,13 @@
-from ProjectEntity import ProjectEntity
-from Services.Database.db import DB, db_session, engine
 
 
 class ProjectService(object):
 
-    def __init__(self, taskService):
+    def __init__(self, projectDAO, taskService=None):
         self.taskService = taskService
+        self.__DAO = projectDAO
 
     def getProjects(self):
-        projects = db_session.query(ProjectEntity).all()
-
-        for project in projects:
-            project.release_date = str(project.release_date)
-        return projects
+        return self.__DAO.getAllProjects()
 
     def getProject(self, id):
-        project = db_session.query(ProjectEntity).filter(ProjectEntity.pid == id).first()
-        return project
-
-    def saveProject(self, newProject):
-        pass
+        return self.__DAO.getProject(id)

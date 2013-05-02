@@ -16,4 +16,4 @@ class UserEntity(Base):
         self.email = email
 
     def __repr__(self):
-        return 'User(%r) %r' % (self.uid, self.name)
+        return 'User(%r) %r' % (self.uid, self.username)

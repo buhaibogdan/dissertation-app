@@ -22,7 +22,7 @@
     <label class="project-name">Select project: </label>
     <select>
         {% for project in projects %}
-            <option value="{{project['pid']}}">{{ project['title'] }}</option>
+            <option value="{{project.pid}}">{{ project.title }}</option>
         {% end %}
     </select>
     <a href="#" id="project_new" class="project-new">Create new project</a>
@@ -30,19 +30,19 @@
 <section class="project-info">
     <div class="row">
         <div class="row-label">Title:</div>
-        <div class="row-value">{{projects[1]['title']}}</div>
+        <div class="row-value">{{projects[1].title}}</div>
     </div>
     <div class="row">
         <div class="row-label">Owner:</div>
-        <div class="row-value">{{projects[1]['owner']}}</div>
+        <div class="row-value">{{projects[1].owner.username}}</div>
     </div>
     <div class="row">
         <div class="row-label">Description:</div>
-        <div class="row-value">{{projects[1]['description']}}</div>
+        <div class="row-value">{{projects[1].description}}</div>
     </div>
     <div class="row">
         <div class="row-label">Release date:</div>
-        <div class="row-value">{{projects[1]['release_date']}}</div>
+        <div class="row-value">{{projects[1].release_date}}</div>
     </div>
     <div class="row">
         <div class="row-label">People involved:</div>
@@ -65,8 +65,8 @@
         <label>Owner</label>
         <select name="project_owner" id="project_owner">
             <option value="0" selected="selected"></option>
-            {% for user in users%}
-                <option value="{{user['uid']}}">{{ user['username'] }}</option>
+            {% for user in users %}
+                <option value="{{user.uid}}">{{ user.username }}</option>
             {% end %}
         </select>
         <label>Description</label>
