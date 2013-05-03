@@ -1,3 +1,4 @@
+from UserEntity import UserEntity
 
 
 class UserService(object):
@@ -13,3 +14,9 @@ class UserService(object):
 
     def getUserByUsername(self, username):
         return self.__DAO.getUserByUsername(username)
+
+    def checkCredentials(self, username, password):
+        user = self.__DAO.getUserByUsername(username)
+        if user.password != password:
+            return False
+        return True

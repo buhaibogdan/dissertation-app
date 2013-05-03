@@ -18,7 +18,8 @@
 
     <header>
         {% block user_login %}
-        <div class="top_status">Logged in as <a href="javascript:void(0)">Bogdan Buhai</a></div>
+        <div class="top_status">Logged in as <a href="javascript:void(0)">Bogdan Buhai</a>
+            <a href="/logout" id="logotBtn" class="logoutBtn">X</a> </div>
         {% end %}
         <div class="header-text">Issue manager</div>
     </header>
@@ -45,7 +46,7 @@
     {% block footer %}
     <footer>
         <p>
-            <small>Some info here. Contact info. And other stuff.</small>
+            <small>IssueManager, 2013, Bogdan Buhai</small>
         </p>
     </footer>
     {% end %}

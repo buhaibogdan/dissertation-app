@@ -2,7 +2,7 @@ from Services.Database.db import Base
 from sqlalchemy import Column, Integer, String, DateTime, Boolean
 
 
-class Task(Base):
+class TaskEntity(Base):
     __tablename__ = 'task'
     id = Column(Integer, primary_key=True)
     title = Column(String(100))
@@ -26,6 +26,7 @@ class Task(Base):
         self.minutes_remaining = minutes_remaining
         self.complexity = complexity
         self.priority = priority
+        self.complexity = complexity
 
     def __repr__(self):
         return 'Task %r' % (self.name)
