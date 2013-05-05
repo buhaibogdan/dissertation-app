@@ -1,5 +1,8 @@
 from Services.Database.db import Base
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import relationship
+from Services.Project.ProjectEntity import ProjectEntity
+from Services.User.UserEntity import UserEntity
 
 
 class TaskEntity(Base):
@@ -7,9 +10,12 @@ class TaskEntity(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String(100))
     description = Column(String(600))
-    assignee_id = Column(Integer)
-    reported_id = Column(Integer)
-    project_id = Column(Integer)
+    assignee_id = Column(Integer, ForeignKey('user.uid'))
+    assignee = relationship('UserEntity', primaryjoin="TaskEntity.assignee_id==UserEntity.uid")
+    reporter_id = Column(Integer, ForeignKey('user.uid'))
+    reporter = relationship('UserEntity', primaryjoin="TaskEntity.reporter_id==UserEntity.uid")
+    project_id = Column(Integer, ForeignKey('project.pid'))
+    project = relationship('ProjectEntity')
     minutes_estimated = Column(Integer)
     minutes_remaining = Column(Integer)
     priority = Column(String(40))
@@ -20,7 +26,7 @@ class TaskEntity(Base):
         self.title = title
         self.description = description
         self.assignee_id = id_assignee
-        self.reported_id = id_reporter
+        self.reporter_id = id_reporter
         self.project_id = id_project
         self.minutes_estimated = minutes_estimated
         self.minutes_remaining = minutes_remaining
@@ -29,4 +35,4 @@ class TaskEntity(Base):
         self.complexity = complexity
 
     def __repr__(self):
-        return 'Task %r' % (self.name)
+        return 'Task %r' % self.name

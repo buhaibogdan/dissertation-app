@@ -14,3 +14,7 @@ class ProjectDAO(object):
     def getProject(self, id):
         project = db_session.query(ProjectEntity).filter(ProjectEntity.pid == id).first()
         return project
+
+    def insertOrUpdateProject(self, project):
+        db_session.add(project)
+        return db_session.commit()

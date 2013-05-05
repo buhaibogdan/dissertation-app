@@ -103,7 +103,7 @@ section.projects_changes{
 .project-info {
     display: inline-block;
     width: 32%;
-    background-color: rgb(167, 238, 241);
+    background-color: rgb(238, 231, 179);
     border-radius: 20px 15%;
     float:left;
     margin-left: 10px;
@@ -151,4 +151,18 @@ section.projects_changes{
     display:inline-block;
     width:70%;
 
+}
+
+.hidden {
+    display: none;
+}
+
+section .blue-background{
+    background-color: rgb(167, 238, 241)
+}
+
+.error {
+    color: red;
+    display: inline-block;
+    font-size: 10px;
 }

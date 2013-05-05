@@ -1,4 +1,7 @@
 {% extends "main.html" %}
+{% block page_scripts %}
+<script src="{{static_url('js/projects.js')}}" type="text/javascript"></script>
+{% end %}
 {% block nav%}
 <nav>
     <div class="navbar">
@@ -20,66 +23,76 @@
 {% block content %}
 <section class="projects_list ">
     <label class="project-name">Select project: </label>
-    <select>
+    <select id="projects-list">
         {% for project in projects %}
             <option value="{{project.pid}}">{{ project.title }}</option>
         {% end %}
     </select>
+    <img src="{{static_url('img/loading.gif')}}" title="loading..." class="invisible" id="loading_gif" />
     <a href="#" id="project_new" class="project-new">Create new project</a>
 </section>
-<section class="project-info">
-    <div class="row">
-        <div class="row-label">Title:</div>
-        <div class="row-value">{{projects[1].title}}</div>
-    </div>
-    <div class="row">
-        <div class="row-label">Owner:</div>
-        <div class="row-value">{{projects[1].owner.username}}</div>
-    </div>
-    <div class="row">
-        <div class="row-label">Description:</div>
-        <div class="row-value">{{projects[1].description}}</div>
-    </div>
-    <div class="row">
-        <div class="row-label">Release date:</div>
-        <div class="row-value">{{projects[1].release_date}}</div>
-    </div>
-    <div class="row">
-        <div class="row-label">People involved:</div>
-        <div class="row-value">
-            {% for userInvolved in usersInvolved %}
-                {% module UserLinkModule(userInvolved) %}{% if userInvolved != usersInvolved[-1] %},
+<section>
+    <div id="project_info" class="project-info">
+        <div class="project-edit">
+            <a href="#" id="project_edit">Edit</a>
+        </div>
+        <div class="clear"></div>
+        <div class="row">
+            <div class="row-label">Title:</div>
+            <div class="row-value" id="project_info_title">{{projects[0].title}}</div>
+        </div>
+        <div class="row">
+            <div class="row-label">Owner:</div>
+            <div class="row-value" id="project_info_owner">{{projects[0].owner.username}}</div>
+        </div>
+        <div class="row">
+            <div class="row-label">Description:</div>
+            <div class="row-value" id="project_info_description">{{projects[0].description}}</div>
+        </div>
+        <div class="row">
+            <div class="row-label">Release date:</div>
+            <div class="row-value" id="project_info_release_date">{{projects[0].release_date}}</div>
+        </div>
+        <div class="row">
+            <div class="row-label">People involved:</div>
+            <div class="row-value"  id="project_info_people_involved">
+                {% for userInvolved in usersInvolved %}
+                    {% module UserLinkModule(userInvolved) %}{% if userInvolved != usersInvolved[-1] %},
+                    {% end %}
                 {% end %}
-            {% end %}
+            </div>
         </div>
     </div>
 
 
-    <div class="project-edit">
-        <a href="#" id="project_edit">Edit</a>
+    <div id="project_new_form" class="hidden project-info blue-background">
+        <form action="" method="post" name="project" id="project_new_edit_form">
+            {% module xsrf_form_html() %}
+            <input type="hidden" name="project_id" id="project_id" value="" />
+            <label>Project title</label>
+            <input type="text" id="project_title" name="project_title">
+            <label>Owner</label>
+            <select name="project_owner" id="project_owner">
+                <option value="0" selected="selected"></option>
+                {% for user in users %}
+                    <option value="{{user.uid}}">{{ user.username }}</option>
+                {% end %}
+            </select>
+            <label>Description</label>
+            <textarea rows="5" cols="25" name="project_description" id="project_description">
+            </textarea>
+            <label>Release date</label>
+            <input type="text" name="project_release" id="project_release"/>
+            <label class="checkbox">
+                <input type="checkbox" name="project_alert" id="project_send_email"> Send out email
+            </label>
+            <button type="button" class="btn" id="project_save">Save</button>
+            <button type="button" class="btn" id="project_new_cancel">Cancel</button>
+            <div id="error_not_saved" class="error hidden">
+                The changes could not be saved. Please try again later.
+            </div>
+        </form>
     </div>
-    <form action="" method="post" name="project">
-        <input type="hidden" name="project_id" id="project_id" value="" />
-        <label>Project title</label>
-        <input type="text" id="project_title" name="project_title">
-        <label>Owner</label>
-        <select name="project_owner" id="project_owner">
-            <option value="0" selected="selected"></option>
-            {% for user in users %}
-                <option value="{{user.uid}}">{{ user.username }}</option>
-            {% end %}
-        </select>
-        <label>Description</label>
-        <textarea rows="5" cols="25" name="project_description" id="project_description">
-        </textarea>
-        <label>Release date</label>
-        <input type="text" name="project_release" id="project_release"/>
-        <label class="checkbox">
-            <input type="checkbox" name="project_alert"> Send out email
-        </label>
-        <button type="submit" class="btn">Save</button>
-        <button type="button" class="btn">Cancel</button>
-    </form>
 </section>
 
 <section class="project-stats">

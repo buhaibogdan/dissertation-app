@@ -18,18 +18,11 @@
 </nav>
 {% end %}
 {% block content %}
-<section class="my_recent_actions ">
-    <ul>
-        <li>Modified x</li>
-        <li>Modified y</li>
-    </ul>
-</section>
-<section class="projects_changes">
-    <ul>
-        <li>Modified x</li>
-        <li>Modified y</li>
-    </ul>
-</section>
+<ul>
+    {% for task in tasks %}
+        <li>{{task.title}}</li>
+    {% end %}
+</ul>
 <div class="clear"></div>
 <p>Well this is the issues page!</p>
 this is some stuff
