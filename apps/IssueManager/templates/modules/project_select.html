@@ -1,0 +1,6 @@
+<label class="project-name">Select project: </label>
+<select id="{{id}}">
+    {% for project in projects %}
+    <option value="{{project.pid}}">{{ project.title }}</option>
+    {% end %}
+</select>

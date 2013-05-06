@@ -12,7 +12,7 @@ Projects.init = function(){
         Projects.showInfo();
     });
 
-    $('#projects-list').on('change', function(){
+    $('#projects_list').on('change', function(){
         var pid = $(this).find("option:selected").val()
         var $loadingImg = $('#loading_gif');
         $loadingImg.css("visibility", "visible");
@@ -31,7 +31,7 @@ Projects.init = function(){
         });
     });
     $('#project_edit').on('click', function(){
-        var pid = $("#projects-list option:selected").val()
+        var pid = $("#projects_list option:selected").val()
         var $loadingImg = $('#loading_gif');
         $loadingImg.css("visibility", "visible");
         $.ajax({
@@ -93,14 +93,14 @@ Projects.hideInfo = function(){
     Projects.clearFields();
     $('#project_new_form').show();
     $('#project_info').hide();
-    $('#projects-list').attr("disabled", "disabled");
+    $('#projects_list').attr("disabled", "disabled");
     $('#error_not_saved').hide();
 }
 
 Projects.showInfo = function(){
     $('#project_new_form').hide();
     $('#project_info').show();
-    $('#projects-list').removeAttr("disabled");
+    $('#projects_list').removeAttr("disabled");
     $('#error_not_saved').hide();
 }
 

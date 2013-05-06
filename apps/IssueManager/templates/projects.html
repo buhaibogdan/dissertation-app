@@ -22,12 +22,7 @@
 {% end %}
 {% block content %}
 <section class="projects_list ">
-    <label class="project-name">Select project: </label>
-    <select id="projects-list">
-        {% for project in projects %}
-            <option value="{{project.pid}}">{{ project.title }}</option>
-        {% end %}
-    </select>
+    {% module ProjectSelectModule(projects, 'projects_list') %}
     <img src="{{static_url('img/loading.gif')}}" title="loading..." class="invisible" id="loading_gif" />
     <a href="#" id="project_new" class="project-new">Create new project</a>
 </section>

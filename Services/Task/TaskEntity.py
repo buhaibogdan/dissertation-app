@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from Services.Project.ProjectEntity import ProjectEntity
 from Services.User.UserEntity import UserEntity
+from StatusEntity import StatusEntity
 
 
 class TaskEntity(Base):
@@ -20,6 +21,8 @@ class TaskEntity(Base):
     minutes_remaining = Column(Integer)
     priority = Column(String(40))
     complexity = Column(Integer)
+    status_id = Column(Integer, ForeignKey('status.id'))
+    status = relationship('StatusEntity')
 
 
     def __init__(self, title, description, id_assignee, id_reporter, id_project, minutes_estimated, minutes_remaining, complexity, priority):

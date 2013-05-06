@@ -166,11 +166,16 @@ class IssueHandler(BaseHandler):
     def get(self):
         projects = self.projectService.getProjects()
         pid = self.get_argument('pid', projects[0].pid)
-        tasks = self.taskService.getTasksForProject(pid)
+        tasksToDo = self.taskService.getTasksToDoForProject(pid)
+        tasksInProgress = self.taskService.getTasksInProgressForProject(pid)
+        tasksClosed = self.taskService.getTasksClosedForProject(pid)
 
         self.render("issues.html",
                     username=self.get_current_user(),
-                    tasks=tasks)
+                    tasksToDo=tasksToDo,
+                    tasksInProgress=tasksInProgress,
+                    tasksClosed=tasksClosed,
+                    projects=projects)
 
 
 class ReportHandler(BaseHandler):

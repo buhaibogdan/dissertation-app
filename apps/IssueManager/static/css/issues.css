@@ -1,0 +1,44 @@
+.task {
+    margin: 2px;
+    background-color: lightblue;
+    border: 2px solid black;
+    border-radius: 5px;
+    width: 300px;
+}
+
+.task-title {
+    background-color: #8fc4e6;
+    cursor: move;
+    text-align: center;
+    border-bottom: 2px solid darkblue;
+}
+
+.task-info {
+
+}
+
+.task-info-row {
+    width: 290px;
+}
+.task-info-name {
+    display:inline-block;
+    padding-right: 3px;
+    text-align: right;
+    width:100px;
+    height: 20px;
+    vertical-align: top;
+}
+
+.task-info-value {
+    display:inline-block;
+    width:170px;
+    overflow:hidden;
+    max-height: 40px;
+    white-space: nowrap;
+}
+
+.tasks-in-progress {
+    min-height: 110px;
+    border: 1px solid red;
+    min-width: 32%;
+}
