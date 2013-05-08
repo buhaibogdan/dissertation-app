@@ -12,5 +12,5 @@ class UserLinkModule(tornado.web.UIModule):
 
 
 class ProjectSelectModule(tornado.web.UIModule):
-    def render(self, projects, js_id):
-        return self.render_string('modules/project_select.html', projects=projects, id=js_id)
+    def render(self, projects, js_id, pid=0):
+        return self.render_string('modules/project_select.html', projects=projects, id=js_id, pid=pid)

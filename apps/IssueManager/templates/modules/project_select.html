@@ -1,6 +1,6 @@
 <label class="project-name">Select project: </label>
 <select id="{{id}}">
     {% for project in projects %}
-    <option value="{{project.pid}}">{{ project.title }}</option>
+    <option value="{{project.pid}}" {% if int(pid)==int(project.pid) %}selected="selected"{%end%} >{{ project.title }}</option>
     {% end %}
 </select>

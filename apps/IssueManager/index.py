@@ -21,6 +21,7 @@ from Services.Task.TaskService import TaskService
 from Services.Task.TaskDAO import TaskDAO
 from ui_modules.modules import UserLinkModule
 from Services.Log.LogService import LogService
+from Services.Task.TaskEntity import TaskEntity
 
 from tornado.options import define, options
 
@@ -34,6 +35,7 @@ class Application(tornado.web.Application):
                     (r"/logout", LogoutHandler),
                     (r"/projects", ProjectsHandler),
                     (r"/project/(\d+)", ProjectHandler),
+                    (r"/project/(\d+)/issues", IssueHandler),
                     (r"/issues", IssueHandler),
                     (r"/reports", ReportHandler)]
         settings = dict(template_path = os.path.join(os.path.dirname(__file__), "templates"),
@@ -78,6 +80,9 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         return self.get_secure_cookie("username")
 
+    def get_current_user_id(self):
+        return self.get_secure_cookie('uid')
+
 
 class IndexHandler(BaseHandler):
     @tornado.web.authenticated
@@ -85,7 +90,7 @@ class IndexHandler(BaseHandler):
         self.render("index.html", username=self.get_current_user())
 
     def write_error(self, status_code, **kwargs):
-        self.write("No method to handle request. Error code %d." %status_code)
+        self.write("No method to handle request. Error code %d." % status_code)
 
 
 class LoginHandler(BaseHandler):
@@ -95,15 +100,16 @@ class LoginHandler(BaseHandler):
     def post(self, *args, **kwargs):
         username = self.get_argument('username')
         password = self.get_argument('password')
-        userService = UserService(UserDAO())
-        if userService.checkCredentials(username, password):
-            self.set_secure_cookie("username", username)
+        user = self.userService.checkCredentials(username, password)
+        if user is not False:
+            self.set_secure_cookie("username", user.username)
+            self.set_secure_cookie('uid', str(user.uid))
             self.redirect("/")
         else:
             self.redirect('/login')
 
     def write_error(self, status_code, **kwargs):
-        self.write("No method to handle request. Error code %d." %status_code)
+        self.write("No method to handle request. Error code %d." % status_code)
 
 
 class LogoutHandler(BaseHandler):
@@ -132,7 +138,7 @@ class ProjectsHandler(BaseHandler):
         pOwnerId = self.get_argument('project_owner', None)
         pDescription = self.get_argument('project_description', '')
         pRelease = self.get_argument('project_release', None)
-        sendEmail = self.get_argument('project_send_email', False) #TODO: handle this
+        notify = self.get_argument('notify', False) #TODO: handle this
         try:
             self.projectService.insertOrUpdateProject(pid, pTitle, pDescription, pOwnerId, pRelease)
             self.set_status(201)
@@ -163,19 +169,44 @@ class ProjectHandler(BaseHandler):
 
 class IssueHandler(BaseHandler):
     @tornado.web.authenticated
-    def get(self):
+    def get(self, pid=None):
         projects = self.projectService.getProjects()
-        pid = self.get_argument('pid', projects[0].pid)
+        # use first project if no parameter pid is passed
+        pid = self.get_argument('pid', projects[0].pid) if pid is None else pid
         tasksToDo = self.taskService.getTasksToDoForProject(pid)
         tasksInProgress = self.taskService.getTasksInProgressForProject(pid)
-        tasksClosed = self.taskService.getTasksClosedForProject(pid)
+        tasksDone = self.taskService.getTasksClosedForProject(pid)
+        usersInProject = self.userProjectService.getUsersForProject(pid)
 
         self.render("issues.html",
                     username=self.get_current_user(),
                     tasksToDo=tasksToDo,
                     tasksInProgress=tasksInProgress,
-                    tasksClosed=tasksClosed,
-                    projects=projects)
+                    tasksDone=tasksDone,
+                    projects=projects,
+                    pid=pid,
+                    usersInProject=usersInProject)
+
+    @tornado.web.authenticated
+    def put(self, pid):
+        reporter_id = int(self.get_current_user_id())
+        id = int(self.get_argument('task_id', 0))
+        title = self.get_argument('title', None)
+        description = self.get_argument('description', None)
+        priority = int(self.get_argument('priority', None))
+        assignee_id = int(self.get_argument('assignee', reporter_id))
+        complexity = int(self.get_argument('complexity', None))
+        estimate = int(self.get_argument('estimate', 0))
+        notify = self.get_argument('notify', False)
+        task = TaskEntity(title, description, assignee_id, reporter_id, pid, estimate, complexity, priority)
+        if id != 0 :
+            task.id = id
+        #TODO: test why not saving/inserting - maybe create task another way
+        result = self.taskService.insertOrUpdateTask(task)
+        if result is False:
+            self.set_status(500)
+        self.set_status(201)
+
 
 
 class ReportHandler(BaseHandler):

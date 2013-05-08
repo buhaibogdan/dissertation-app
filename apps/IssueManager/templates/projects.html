@@ -22,7 +22,7 @@
 {% end %}
 {% block content %}
 <section class="projects_list ">
-    {% module ProjectSelectModule(projects, 'projects_list') %}
+    {% module ProjectSelectModule(projects, 'projects_list', 0) %}
     <img src="{{static_url('img/loading.gif')}}" title="loading..." class="invisible" id="loading_gif" />
     <a href="#" id="project_new" class="project-new">Create new project</a>
 </section>
@@ -79,7 +79,7 @@
             <label>Release date</label>
             <input type="text" name="project_release" id="project_release"/>
             <label class="checkbox">
-                <input type="checkbox" name="project_alert" id="project_send_email"> Send out email
+                <input type="checkbox" name="notify" id="project_send_email"> Notify
             </label>
             <button type="button" class="btn" id="project_save">Save</button>
             <button type="button" class="btn" id="project_new_cancel">Cancel</button>

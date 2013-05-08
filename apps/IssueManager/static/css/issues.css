@@ -39,6 +39,13 @@
 
 .tasks-in-progress {
     min-height: 110px;
-    border: 1px solid red;
     min-width: 32%;
+}
+
+.task-buttons button {
+    width: 100px;
+}
+
+.new-issue-modal textarea {
+    width:80%;
 }

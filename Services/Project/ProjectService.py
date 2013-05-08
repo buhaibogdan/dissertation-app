@@ -30,8 +30,6 @@ class ProjectService(object):
             return {}
 
     def insertOrUpdateProject(self, pid, title, description, id_owner, release_date):
-        if True:
-            raise SQLAlchemyError()
         if pid is None or len(pid) < 1:
             #insert
             project = ProjectEntity(title, description, id_owner, release_date)

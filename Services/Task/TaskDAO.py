@@ -17,3 +17,8 @@ class TaskDAO(object):
 
     def getTasksAssignedTo(self, id):
         return db_session.query(TaskEntity).filter(TaskEntity.reported_id == id)
+
+    def insertOrUpdateTask(self, task):
+        db_session.add(task)
+        db_session.commit()
+        return task.id

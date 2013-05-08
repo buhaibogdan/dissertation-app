@@ -1,4 +1,5 @@
 from TaskDAO import TaskDAO
+from sqlalchemy.exc import SQLAlchemyError
 
 class TaskService(object):
     def __init__(self, dao):
@@ -40,6 +41,14 @@ class TaskService(object):
 
     def getTasksClosedForProject(self, pid):
         tasks = self.getTasksByStatusForProject(pid)
-        if "Closed" in tasks.keys():
-            return tasks['Closed']
+        if "Done" in tasks.keys():
+            return tasks['Done']
         return []
+
+    def insertOrUpdateTask(self, task):
+        try:
+            id = self.__DAO.insertOrUpdateTask(task)
+            return id
+        except SQLAlchemyError as err:
+            msg = err.message
+            return False

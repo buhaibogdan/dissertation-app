@@ -19,4 +19,4 @@ class UserService(object):
         user = self.__DAO.getUserByUsername(username)
         if user.password != password:
             return False
-        return True
+        return user
