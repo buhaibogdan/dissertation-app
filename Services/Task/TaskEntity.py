@@ -4,7 +4,8 @@ from sqlalchemy.orm import relationship
 from Services.Project.ProjectEntity import ProjectEntity
 from Services.User.UserEntity import UserEntity
 from StatusEntity import StatusEntity
-
+from sqlalchemy.ext.hybrid import hybrid_property
+from Services.Utils.TimeConvertService import TimeConvertService
 
 class TaskEntity(Base):
     __tablename__ = 'task'
@@ -17,8 +18,8 @@ class TaskEntity(Base):
     reporter = relationship('UserEntity', primaryjoin="TaskEntity.reporter_id==UserEntity.uid")
     project_id = Column(Integer, ForeignKey('project.pid'), nullable=False)
     project = relationship('ProjectEntity')
-    minutes_estimated = Column(Integer)
-    minutes_remaining = Column(Integer)
+    _minutes_estimated = Column("minutes_estimated", Integer)
+    _minutes_remaining = Column("minutes_remaining", Integer)
     priority = Column(String(40))
     complexity = Column(Integer)
     status_id = Column(Integer, ForeignKey('status.id'), nullable=False, default=1)
@@ -37,3 +38,19 @@ class TaskEntity(Base):
 
     def __repr__(self):
         return 'Task %r' % self.name
+
+    @hybrid_property
+    def minutes_estimated(self):
+        return TimeConvertService.convertFromMinutes(self._minutes_estimated)
+
+    @minutes_estimated.setter
+    def minutes_estimated(self, minutes_estimated):
+        self._minutes_estimated = TimeConvertService.convertToMinutes(minutes_estimated)
+
+    @hybrid_property
+    def minutes_remaining(self):
+        return TimeConvertService.convertFromMinutes(self._minutes_remaining)
+
+    @minutes_estimated.setter
+    def minutes_estimated(self, minutes_remaining):
+        self._minutes_remaining = TimeConvertService.convertToMinutes(minutes_remaining)

@@ -1,7 +1,10 @@
 from TaskDAO import TaskDAO
 from sqlalchemy.exc import SQLAlchemyError
+import re
+
 
 class TaskService(object):
+
     def __init__(self, dao):
         self.__DAO = dao
 
@@ -49,6 +52,5 @@ class TaskService(object):
         try:
             id = self.__DAO.insertOrUpdateTask(task)
             return id
-        except SQLAlchemyError as err:
-            msg = err.message
+        except SQLAlchemyError:
             return False

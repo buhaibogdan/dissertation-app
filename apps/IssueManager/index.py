@@ -192,21 +192,20 @@ class IssueHandler(BaseHandler):
         reporter_id = int(self.get_current_user_id())
         id = int(self.get_argument('task_id', 0))
         title = self.get_argument('title', None)
-        description = self.get_argument('description', None)
+        description = self.get_argument('description', '')
         priority = int(self.get_argument('priority', None))
         assignee_id = int(self.get_argument('assignee', reporter_id))
         complexity = int(self.get_argument('complexity', None))
         estimate = int(self.get_argument('estimate', 0))
         notify = self.get_argument('notify', False)
         task = TaskEntity(title, description, assignee_id, reporter_id, pid, estimate, complexity, priority)
-        if id != 0 :
+        if id != 0:
             task.id = id
         #TODO: test why not saving/inserting - maybe create task another way
         result = self.taskService.insertOrUpdateTask(task)
         if result is False:
             self.set_status(500)
         self.set_status(201)
-
 
 
 class ReportHandler(BaseHandler):
