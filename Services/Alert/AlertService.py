@@ -1,4 +1,0 @@
-
-
-class AlertService(object):
-    pass
