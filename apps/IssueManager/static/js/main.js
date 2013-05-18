@@ -1,16 +1,18 @@
 $(document).ready(function(){
-    //WS.getAllHistory();
+    WS.getAllHistory();
     WS.getMyHistory();
-    WS.getUserHistory(3)
-    WS.getProjectHistory(2)
+
+    var pid;
+    if ( pid = $("#projects_list").val() ){
+        WS.getProjectHistory(pid);
+    }
 })
 
-function getCookie(name) {
-    var c = document.cookie.match("\\b" + name + "=([^;]*)\\b");
-    return c ? c[1] : undefined;
-}
 
 
+/*|-------------------|*/
+/*|-----Websockets----|*/
+/*|-------------------|*/
 WS = {} || WS;
 
 WS.host  = 'ws://localhost:8000/history';
@@ -19,66 +21,114 @@ WS.init = function(){
 
 };
 
+WS.myHistoryWS = null;
+WS.allHistoryWS = null;
+WS.projectHistoryWS = null;
+WS.userHistoryWS = null;
+
 WS.getAllHistory = function(){
-    var websocket = new WebSocket(WS.host);
-    websocket.onopen = function (evt) {
-        console.log('websocket open to '+WS.host);
+    if ( !$('#all_activity_list').length ){
+        return false;
+    }
+
+    WS.allHistoryWS = new WebSocket(WS.host);
+    WS.allHistoryWS.onopen = function (evt) {
+        var intervalIDProject = setInterval(function(){WS.allHistoryWS.send('refresh')}, 15000);
     };
-    websocket.onmessage = function(evt) {
-        events = $.parseJSON(evt.data);
-        console.log(events);
+    WS.allHistoryWS.onmessage = function(evt) {
+        var events = $.parseJSON(evt.data);
+        $('#loading_activity_all').toggleClass('invisible');
+        WS.displayHTML('all_activity_list', events);
 
     };
-    websocket.onerror = function (evt) {
+    WS.allHistoryWS.onerror = function (evt) {
         console.log('error on all history');
         console.log(evt);
     };
+
+    return true;
 };
 
 WS.getMyHistory = function(){
-    var websocket = new WebSocket(WS.host + '/user/' + $('#my_uid').val());
-    websocket.onopen = function (evt) {
+    if ( !$('#my_activity_list').length ){
+        return false;
+    }
+    WS.myHistoryWS = new WebSocket(WS.host + '/user/' + $('#my_uid').val());
+    WS.myHistoryWS.onopen = function (evt) {
+        var intervalIDProject = setInterval(function(){WS.myHistoryWS.send('refresh')}, 15000);
         console.log('websocket open to '+WS.host + '/user/' + $('#my_uid').val());
     };
-    websocket.onmessage = function(evt) {
-        events = $.parseJSON(evt.data);
-        console.log(events);
-
+    WS.myHistoryWS.onmessage = function(evt) {
+        var events = $.parseJSON(evt.data);
+        $('#loading_activity_my').toggleClass('invisible');
+        WS.displayHTML('my_activity_list', events);
     };
-    websocket.onerror = function (evt) {
+    WS.myHistoryWS.onerror = function (evt) {
         console.log('error on my history');
         console.log(evt);
     };
+    return true;
 };
 
 WS.getProjectHistory = function(pid){
-    var websocket = new WebSocket(WS.host + '/project/' + pid);
-    websocket.onopen = function (evt) {
-        console.log('websocket open to '+WS.host + '/project/' + pid);
+    if ( !$('#project_activity_list').length ){
+        return false;
+    }
+    WS.projectHistoryWS = new WebSocket(WS.host + '/project/' + pid);
+    WS.projectHistoryWS.onopen = function (evt) {
+        var intervalIDProject = setInterval(function(){WS.projectHistoryWS.send('refresh')}, 15000);
     };
-    websocket.onmessage = function(evt) {
-        events = $.parseJSON(evt.data);
-        console.log(events);
+    WS.projectHistoryWS.onmessage = function(evt) {
+        var events = $.parseJSON(evt.data);
+        $('#loading_activity_project').toggleClass('invisible');
+        WS.displayHTML('project_activity_list', events);
 
     };
-    websocket.onerror = function (evt) {
+    WS.projectHistoryWS.onerror = function (evt) {
         console.log('error on projectHistory');
         console.log(evt);
     };
+    return true;
 };
 
 WS.getUserHistory = function(uid){
-    var websocket = new WebSocket(WS.host + '/user/'+ uid);
-    websocket.onopen = function (evt) {
+    if ( !$('#user_activity_list').length ){
+        return false;
+    }
+    WS.userHistoryWS = new WebSocket(WS.host + '/user/'+ uid);
+    WS.userHistoryWS.onopen = function (evt) {
         console.log('websocket open to '+ WS.host + '/user/'+ uid);
     };
-    websocket.onmessage = function(evt) {
-        events = $.parseJSON(evt.data);
+    WS.userHistoryWS.onmessage = function(evt) {
+        var events = $.parseJSON(evt.data);
         console.log(events);
 
     };
-    websocket.onerror = function (evt) {
+    WS.userHistoryWS.onerror = function (evt) {
         console.log('error on user history');
         console.log(evt);
     };
+    return true;
 };
+
+WS.displayHTML = function(elemId, events){
+    var nrEvents = events.length;
+    for (var i=0;i<nrEvents;i++){
+        var ev = events[i];
+        $('<li />').html(ev.message).prependTo('#'+elemId);
+    }
+}
+
+/*|-------------------|*/
+/*|----/Websockets----|*/
+/*|-------------------|*/
+
+
+/*|-------------------------|*/
+/*|----Utility functions----|*/
+/*|-------------------------|*/
+function getCookie(name) {
+    var c = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+    return c ? c[1] : undefined;
+}
+

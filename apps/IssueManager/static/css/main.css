@@ -56,24 +56,24 @@ nav .navbar {
     padding: 20px;
 }
 
-section.my_recent_actions {
+
+section.all-recent-actions,
+section.project-recent-actions,
+section.my-recent-actions {
     border: 1px solid #078697;
     display: inline-block;
     width: 340px;
     background-color: white;
-    height: 200px;
-    float:left;
+    min-height: 100px;
     margin-left: 50px;
+    list-style-type: circle;
 }
 
-section.projects_changes{
-    border: 1px solid #078697;
-    display: inline-block;
+.activity-title {
     width: 340px;
-    background-color: white;
-    height: 200px;
-    float:right;
-    margin-right: 50px;
+    text-align: center;
+    border-bottom: 1px solid #078697;
+    background-color: #87e6e6;
 }
 
 .clear {
@@ -169,4 +169,11 @@ section .blue-background{
 
 .span4 {
 
+}
+
+.float-right {
+    float: right;
+}
+.float-left {
+    float: left;
 }

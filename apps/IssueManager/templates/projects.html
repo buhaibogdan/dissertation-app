@@ -90,8 +90,13 @@
     </div>
 </section>
 
-<section class="project-stats">
-    {% module ProjectInfoModule() %}
+<section class="project-recent-actions float-right">
+    <div class="activity-title">
+        Recent activity on project
+        <img src="{{static_url('img/loading.gif')}}" title="loading..." id="loading_activity_project" />
+    </div>
+    <ul id="project_activity_list">
+    </ul>
 </section>
 <div class="clear"></div>
 </div>
