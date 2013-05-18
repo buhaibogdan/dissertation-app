@@ -33,11 +33,14 @@ WS.getAllHistory = function(){
 
     WS.allHistoryWS = new WebSocket(WS.host);
     WS.allHistoryWS.onopen = function (evt) {
-        var intervalIDProject = setInterval(function(){WS.allHistoryWS.send('refresh')}, 15000);
+        var intervalIDProject = setInterval(function(){
+            WS.allHistoryWS.send('refresh');
+            $('#loading_activity_all').toggleClass('invisible');
+        }, 15000);
     };
     WS.allHistoryWS.onmessage = function(evt) {
-        var events = $.parseJSON(evt.data);
         $('#loading_activity_all').toggleClass('invisible');
+        var events = $.parseJSON(evt.data);
         WS.displayHTML('all_activity_list', events);
 
     };
@@ -55,12 +58,15 @@ WS.getMyHistory = function(){
     }
     WS.myHistoryWS = new WebSocket(WS.host + '/user/' + $('#my_uid').val());
     WS.myHistoryWS.onopen = function (evt) {
-        var intervalIDProject = setInterval(function(){WS.myHistoryWS.send('refresh')}, 10000);
+        var intervalIDProject = setInterval(function(){
+            WS.myHistoryWS.send('refresh');
+            $('#loading_activity_my').toggleClass('invisible');
+        }, 15000);
         console.log('websocket open to '+WS.host + '/user/' + $('#my_uid').val());
     };
     WS.myHistoryWS.onmessage = function(evt) {
-        var events = $.parseJSON(evt.data);
         $('#loading_activity_my').toggleClass('invisible');
+        var events = $.parseJSON(evt.data);
         WS.displayHTML('my_activity_list', events);
     };
     WS.myHistoryWS.onerror = function (evt) {
@@ -76,11 +82,14 @@ WS.getProjectHistory = function(pid){
     }
     WS.projectHistoryWS = new WebSocket(WS.host + '/project/' + pid);
     WS.projectHistoryWS.onopen = function (evt) {
-        var intervalIDProject = setInterval(function(){WS.projectHistoryWS.send('refresh')}, 15000);
+        var intervalIDProject = setInterval(function(){
+            WS.projectHistoryWS.send('refresh');
+            $('#loading_activity_project').toggleClass('invisible');
+        }, 15000);
     };
     WS.projectHistoryWS.onmessage = function(evt) {
-        var events = $.parseJSON(evt.data);
         $('#loading_activity_project').toggleClass('invisible');
+        var events = $.parseJSON(evt.data);
         WS.displayHTML('project_activity_list', events);
 
     };

@@ -13,6 +13,7 @@ class BaseAsyncHandler(tornado.websocket.WebSocketHandler):
         return HistoryService()
 
     def getNewHistoryEvents(self, historyString):
+
         historyJson = json.loads(historyString)
         try:
             newHistoryEvents = [event for event in historyJson if event not in self.initialEvents]
@@ -20,7 +21,6 @@ class BaseAsyncHandler(tornado.websocket.WebSocketHandler):
             self.initialEvents = newHistoryEvents + historyJson
         except AttributeError:
             return ''
-
         return json.dumps(newHistoryEvents)
 
 
@@ -65,13 +65,12 @@ class UserHistoryHandler(BaseAsyncHandler):
     def getUserHistory(self, uid, justNew=False):
         client = tornado.httpclient.AsyncHTTPClient()
         response = yield tornado.gen.Task(client.fetch, webServicesAddress['event'] + 'user/' + uid)
+
         if justNew:
-            print uid
-            print '---------'
             eventsString = self.getNewHistoryEvents(response.body)
         else:
             eventsString = response.body
-            self.initialEvents = eventsString
+            self.initialEvents = json.loads(eventsString)
         self.write_message(eventsString)
         self.finish()
 
@@ -96,7 +95,7 @@ class ProjectHistoryHandler(BaseAsyncHandler):
             eventsString = self.getNewHistoryEvents(response.body)
         else:
             eventsString = response.body
-            self.initialEvents = eventsString
+            self.initialEvents = json.loads(eventsString)
 
         self.write_message(eventsString)
         self.finish()

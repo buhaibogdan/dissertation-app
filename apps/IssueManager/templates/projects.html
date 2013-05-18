@@ -21,6 +21,14 @@
 </nav>
 {% end %}
 {% block content %}
+<section class="project-recent-actions float-right">
+    <div class="activity-title">
+        Recent activity on project
+        <img src="{{static_url('img/loading.gif')}}" title="loading..." id="loading_activity_project" />
+    </div>
+    <ul id="project_activity_list">
+    </ul>
+</section>
 <section class="projects_list ">
     {% module ProjectSelectModule(projects, 'projects_list', 0) %}
     <img src="{{static_url('img/loading.gif')}}" title="loading..." class="invisible" id="loading_gif" />
@@ -88,15 +96,6 @@
             </div>
         </form>
     </div>
-</section>
-
-<section class="project-recent-actions float-right">
-    <div class="activity-title">
-        Recent activity on project
-        <img src="{{static_url('img/loading.gif')}}" title="loading..." id="loading_activity_project" />
-    </div>
-    <ul id="project_activity_list">
-    </ul>
 </section>
 <div class="clear"></div>
 </div>
