@@ -1,6 +1,5 @@
 import tornado.websocket
 import json
-import requests
 from Services.History.HistoryService import HistoryService
 from conf.conf import webServicesAddress
 import tornado
@@ -13,6 +12,17 @@ class BaseAsyncHandler(tornado.websocket.WebSocketHandler):
     def historyService(self):
         return HistoryService()
 
+    def getNewHistoryEvents(self, historyString):
+        historyJson = json.loads(historyString)
+        try:
+            newHistoryEvents = [event for event in historyJson if event not in self.initialEvents]
+            #keep for next call
+            self.initialEvents = newHistoryEvents + historyJson
+        except AttributeError:
+            return ''
+
+        return json.dumps(newHistoryEvents)
+
 
 class HistoryHandler(BaseAsyncHandler):
     def open(self):
@@ -22,7 +32,7 @@ class HistoryHandler(BaseAsyncHandler):
         self.getAllHistory(True)
 
     def on_close(self):
-        self.write_message('no close')
+        self.write_message('closed')
 
     @tornado.web.asynchronous
     @tornado.gen.engine
@@ -33,15 +43,10 @@ class HistoryHandler(BaseAsyncHandler):
             eventsString = self.getNewHistoryEvents(response.body)
         else:
             eventsString = response.body
-            self.initialEvents = eventsString
+            self.initialEvents = json.loads(eventsString)
 
         self.write_message(eventsString)
         self.finish()
-
-    def getNewHistoryEvents(self, historyString):
-        historyJson = json.loads(historyString)
-        newHistoryEvents = [event for event in historyJson if event not in self.initialEvents]
-        return json.dumps(newHistoryEvents)
 
 
 class UserHistoryHandler(BaseAsyncHandler):
@@ -50,18 +55,24 @@ class UserHistoryHandler(BaseAsyncHandler):
         self.getUserHistory(uid)
 
     def on_message(self, message):
-        if message == 'refresh':
-            self.getUserHistory(self.uid)
+        self.getUserHistory(self.uid, True)
 
     def on_close(self):
-        pass
+        self.write_message('closed')
 
     @tornado.web.asynchronous
     @tornado.gen.engine
-    def getUserHistory(self, uid):
+    def getUserHistory(self, uid, justNew=False):
         client = tornado.httpclient.AsyncHTTPClient()
         response = yield tornado.gen.Task(client.fetch, webServicesAddress['event'] + 'user/' + uid)
-        self.write_message(response.body)
+        if justNew:
+            print uid
+            print '---------'
+            eventsString = self.getNewHistoryEvents(response.body)
+        else:
+            eventsString = response.body
+            self.initialEvents = eventsString
+        self.write_message(eventsString)
         self.finish()
 
 
@@ -71,16 +82,21 @@ class ProjectHistoryHandler(BaseAsyncHandler):
         self.getProjectHistory(pid)
 
     def on_message(self, message):
-        if message == 'refresh':
-            self.getUserHistory(self.pid)
+        self.getProjectHistory(self.pid, True)
 
     def on_close(self):
         pass
 
     @tornado.web.asynchronous
     @tornado.gen.engine
-    def getProjectHistory(self, pid):
+    def getProjectHistory(self, pid, justNew=False):
         client = tornado.httpclient.AsyncHTTPClient()
         response = yield tornado.gen.Task(client.fetch, webServicesAddress['event'] + 'project/' + pid)
-        self.write_message(response.body)
+        if justNew:
+            eventsString = self.getNewHistoryEvents(response.body)
+        else:
+            eventsString = response.body
+            self.initialEvents = eventsString
+
+        self.write_message(eventsString)
         self.finish()

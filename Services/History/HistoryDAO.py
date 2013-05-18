@@ -8,12 +8,18 @@ class HistoryDAO(object):
         pass
 
     def getHistory(self):
+        db_session.flush()
+        db_session.commit()
         return db_session.query(HistoryEntity).all()
 
     def getUserHistory(self, uid):
+        db_session.flush()
+        db_session.commit()
         return db_session.query(HistoryEntity).filter(HistoryEntity.uid == uid).all()
 
     def getProjectHistory(self, pid):
+        db_session.flush()
+        db_session.commit()
         return db_session.query(HistoryEntity).filter(HistoryEntity.pid == pid).all()
 
     def updateHistory(self, hEvent):

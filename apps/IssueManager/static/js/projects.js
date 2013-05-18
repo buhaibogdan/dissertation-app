@@ -43,7 +43,6 @@ Projects.init = function(){
                 Projects.setValues(project);
                 $loadingImg.css("visibility", "hidden");
             }
-
         });
     });
 

@@ -55,7 +55,7 @@ WS.getMyHistory = function(){
     }
     WS.myHistoryWS = new WebSocket(WS.host + '/user/' + $('#my_uid').val());
     WS.myHistoryWS.onopen = function (evt) {
-        var intervalIDProject = setInterval(function(){WS.myHistoryWS.send('refresh')}, 15000);
+        var intervalIDProject = setInterval(function(){WS.myHistoryWS.send('refresh')}, 10000);
         console.log('websocket open to '+WS.host + '/user/' + $('#my_uid').val());
     };
     WS.myHistoryWS.onmessage = function(evt) {

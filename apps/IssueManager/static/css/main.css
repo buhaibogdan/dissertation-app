@@ -62,15 +62,18 @@ section.project-recent-actions,
 section.my-recent-actions {
     border: 1px solid #078697;
     display: inline-block;
-    width: 340px;
+    width: 380px;
     background-color: white;
     min-height: 100px;
     margin-left: 50px;
     list-style-type: circle;
+    max-height: 500px;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 .activity-title {
-    width: 340px;
+    width: 380px;
     text-align: center;
     border-bottom: 1px solid #078697;
     background-color: #87e6e6;
