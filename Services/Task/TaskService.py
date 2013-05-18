@@ -54,3 +54,9 @@ class TaskService(object):
             return id
         except SQLAlchemyError:
             return False
+
+    def deleteTask(self, id):
+        return self.__DAO.deleteTask(id)
+
+    def updateTaskStatus(self, id, status):
+        self.__DAO.updateTaskStatus(id, status)

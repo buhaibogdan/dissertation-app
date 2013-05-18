@@ -22,3 +22,12 @@ class TaskDAO(object):
         db_session.add(task)
         db_session.commit()
         return task.id
+
+    def deleteTask(self, id):
+        db_session.query(TaskEntity).filter(TaskEntity.id == id).delete()
+        db_session.commit()
+        return id
+
+    def updateTaskStatus(self, id, status):
+        db_session.query(TaskEntity).filter(TaskEntity.id == id).update({'status_id': status})
+        db_session.commit()

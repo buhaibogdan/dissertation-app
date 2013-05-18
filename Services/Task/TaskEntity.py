@@ -4,8 +4,10 @@ from sqlalchemy.orm import relationship
 from Services.Project.ProjectEntity import ProjectEntity
 from Services.User.UserEntity import UserEntity
 from StatusEntity import StatusEntity
+from TaskTypeEntity import TaskTypeEntity
 from sqlalchemy.ext.hybrid import hybrid_property
 from Services.Utils.TimeConvertService import TimeConvertService
+
 
 class TaskEntity(Base):
     __tablename__ = 'task'
@@ -24,17 +26,31 @@ class TaskEntity(Base):
     complexity = Column(Integer)
     status_id = Column(Integer, ForeignKey('status.id'), nullable=False, default=1)
     status = relationship('StatusEntity')
+    type_id = Column(Integer, ForeignKey('task_type.id'), nullable=False, default=1)
+    type = relationship('TaskTypeEntity')
 
-    def __init__(self, title, description, id_assignee, id_reporter, id_project, minutes_estimated, complexity, priority):
+    def __init__(self,
+                 title,
+                 description,
+                 id_assignee,
+                 id_reporter,
+                 id_project,
+                 minutes_estimated,
+                 complexity,
+                 priority,
+                 type_id):
+
         self.title = title
         self.description = description
         self.assignee_id = id_assignee
         self.reporter_id = id_reporter
         self.project_id = id_project
         self.minutes_estimated = minutes_estimated
+        self.minutes_remaining = minutes_estimated
         self.complexity = complexity
         self.priority = priority
         self.complexity = complexity
+        self.type_id = type_id
 
     def __repr__(self):
         return 'Task %r' % self.name
@@ -51,6 +67,6 @@ class TaskEntity(Base):
     def minutes_remaining(self):
         return TimeConvertService.convertFromMinutes(self._minutes_remaining)
 
-    @minutes_estimated.setter
-    def minutes_estimated(self, minutes_remaining):
+    @minutes_remaining.setter
+    def minutes_remaining(self, minutes_remaining):
         self._minutes_remaining = TimeConvertService.convertToMinutes(minutes_remaining)

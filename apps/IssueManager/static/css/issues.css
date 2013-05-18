@@ -1,13 +1,11 @@
 .task {
     margin: 2px;
-    background-color: lightblue;
     border: 2px solid black;
     border-radius: 5px;
     width: 300px;
 }
 
 .task-title {
-    background-color: #8fc4e6;
     cursor: move;
     text-align: center;
     border-bottom: 2px solid darkblue;
@@ -37,7 +35,7 @@
     white-space: nowrap;
 }
 
-.tasks-in-progress {
+.tasks-in-progress, .tasks-todo, .tasks-done {
     min-height: 110px;
     min-width: 32%;
 }
@@ -48,4 +46,43 @@
 
 .new-issue-modal textarea {
     width:80%;
+}
+.hover-status-progress{
+    background-color: lightgoldenrodyellow;
+}
+.hover-status-todo{
+    background-color: lightcoral;
+}
+.hover-status-done{
+    background-color: #9d9d9d;
+}
+
+.in-progress-column,
+.todo-column,
+.closed-column {
+    font-weight: bold;
+    line-height: 30px;
+    display:inline-block;
+    width:100%;
+}
+
+.in-progress-column {
+    background-color: lightgoldenrodyellow;
+}
+.todo-column {
+    background-color: lightcoral;
+}
+.closed-column {
+    background-color: grey;
+    color:white;
+}
+
+.task-type-1 {
+    background-color: lightgreen;
+}
+.task-type-2 {
+    background-color: orange;
+}
+.task-type-3 {
+    background-color: lightblue;
 }

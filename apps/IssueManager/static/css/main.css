@@ -170,21 +170,3 @@ section .blue-background{
 .span4 {
 
 }
-.in-progress-column,
-.todo-column,
-.closed-column {
-    font-weight: bold;
-    line-height: 30px;
-    display:inline-block;
-    width:100%;
-}
-
-.in-progress-column {
-    background-color: lightgoldenrodyellow;
-}
-.todo-column {
-    background-color: lightcoral;
-}
-.closed-column {
-    background-color: lightgreen;
-}

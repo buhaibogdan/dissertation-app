@@ -22,6 +22,7 @@
         {% block user_login %}
         <div class="top_status">Logged in as <a href="javascript:void(0)">{{username}}</a>
             <a href="/logout" id="logotBtn" class="logoutBtn">X</a> </div>
+            <input type="hidden" id="my_uid" value="{{uid}}" />
         {% end %}
         <div class="header-text">Issue manager</div>
     </header>
