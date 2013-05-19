@@ -6,6 +6,7 @@ class ProjectInfoModule(tornado.web.UIModule):
         return self.render_string('modules/project_info.html', project="awesome")
 '''
 
+
 class UserLinkModule(tornado.web.UIModule):
     def render(self, user):
         return self.render_string('modules/user_link.html', user=user)
@@ -14,3 +15,8 @@ class UserLinkModule(tornado.web.UIModule):
 class ProjectSelectModule(tornado.web.UIModule):
     def render(self, projects, js_id, pid=0):
         return self.render_string('modules/project_select.html', projects=projects, id=js_id, pid=pid)
+
+
+class IssueLogWorkModule(tornado.web.UIModule):
+    def render(self, task):
+        return self.render_string('modules/issue_time.html', task=task)

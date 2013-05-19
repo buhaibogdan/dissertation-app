@@ -51,7 +51,8 @@ Issues.init = function(){
     // deleting a task
     // _xsrf must be passed as param for secure cookie
     // must be in get for DELETE method
-    $('#task_columns .task button.close').on('click', function(){
+    $('#task_columns .task .remove-task').on('click', function(evt){
+        evt.preventDefault()
         var taskId = $(this).closest('.task').attr('data-id');
         var url = '/issue/'+taskId + '?_xsrf='+getCookie("_xsrf");
         var c =confirm("Sure?");
@@ -70,6 +71,43 @@ Issues.init = function(){
             }
         })
     });
+
+    $('#task_columns .task .log-work').on('click', function(evt){
+        evt.preventDefault();
+        var taskId = $(this).closest('.task').attr('data-id');
+        var url = '/issue/'+taskId+'/time';
+        $.ajax({
+            type:"GET",
+            url:url,
+            complete: function(xhr){
+                $('#logWorkModal').html(xhr.responseText);
+                $('#log_work_auto_adjust').on('change', function(){
+                    if ( !$(this).prop('checked') ){
+                        $('#log_work_adjust_by').prop('disabled', false);
+                    } else {
+                        $('#log_work_adjust_by').prop('disabled', true);
+                    }
+                });
+                $('#issue_log').on('click', function(){
+                    var url = '/issue/'+ $('#task_id_log').val();
+                    var data = $('#issue_log_work').serialize();
+                    $.ajax({
+                        type: 'PUT',
+                        data: data,
+                        url: url,
+                        complete: function(xhr){
+                            if (xhr.status == 200){
+                                Issues.reload();
+                            } else {
+                                $('#error_work_not_logged').css({'visibility':'visible'});
+                            }
+                        }
+                    })
+                });
+            }
+        })
+    });
+
 };
 
 Issues.enableDraggable = function(){

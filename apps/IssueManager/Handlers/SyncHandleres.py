@@ -2,6 +2,7 @@ import requests
 import tornado.web
 
 from apps.IssueManager.ui_modules.modules import UserLinkModule
+from apps.IssueManager.ui_modules.modules import IssueLogWorkModule
 from sqlalchemy.exc import SQLAlchemyError
 from Services.UserProject.UserProjectService import UserProjectService
 from Services.Project.ProjectService import ProjectService
@@ -20,6 +21,7 @@ from Services.Event.EventService import EventService
 class BaseHandler(tornado.web.RequestHandler):
     """ This is lazy initialization
     """
+
     @property
     def userService(self):
         return UserService(UserDAO())
@@ -47,6 +49,7 @@ class BaseHandler(tornado.web.RequestHandler):
     @property
     def historyService(self):
         return HistoryService()
+
     @property
     def eventService(self):
         return EventService()
@@ -127,12 +130,12 @@ class ProjectsHandler(BaseHandler):
             self.logService.log_error("SQLAlchemyError while saving project: " + err.message)
             self.set_status(500)
 
-        #update history
-        #self.historyService.updateHistory()
+            #update history
+            #self.historyService.updateHistory()
             #send out emails
         if notify:
             self.historyService.sendEmails(self.get_current_user_id(), pid, self.get_current_user()
-                                           + " created a new task.")
+                                                                            + " created a new task.")
 
 
 class ProjectHandler(BaseHandler):
@@ -159,6 +162,7 @@ class IssuesHandler(BaseHandler):
     """
         Handle issues for projects
     """
+
     @tornado.web.authenticated
     def get(self, pid=None):
         h = HistoryService()
@@ -211,13 +215,24 @@ class IssuesHandler(BaseHandler):
         #send out emails
         if notify:
             self.historyService.sendEmails(self.get_current_user_id(), pid, self.get_current_user()
-                                           + " created a new task.")
+                                                                            + " created a new task.")
 
 
 class IssueHandler(BaseHandler):
     """
+        Content for log work modal
+    """
+
+    @tornado.web.authenticated
+    def get(self, id):
+        task = self.taskService.getTask(id)
+        module = IssueLogWorkModule(self)
+        self.write(module.render(task))
+
+    """
         Handle issues removal and editing.
     """
+
     @tornado.web.authenticated
     def delete(self, task_id):
         try:
@@ -227,15 +242,37 @@ class IssueHandler(BaseHandler):
 
     @tornado.web.authenticated
     def put(self, task_id):
-        status = self.get_argument('status')
-        #update history
+        status = self.get_argument('status', None)
         pid = self.get_argument('pid')
-        self.taskService.updateTaskStatus(task_id, status)
-        message = self.get_current_user() \
-            + " updated task " \
-            + self.taskService.getTask(task_id).title \
-            + " from project " \
-            + self.projectService.getProject(pid).title
+
+        if status is not None:
+            self.taskService.updateTaskStatus(task_id, status)
+            self.set_status(200)
+            #update history message
+            message = self.get_current_user() \
+                      + " updated task " \
+                      + self.taskService.getTask(task_id).title \
+                      + " from project " \
+                      + self.projectService.getProject(pid).title
+        else:
+            timeLogged = self.get_argument('log_work_value', 0)
+            if not timeLogged:
+                self.set_status(400)
+                self.finish()
+            adjustAuto = self.get_argument('log_work_auto_adjust', True)
+            adjustBy = self.get_argument('log_work_adjust_by', 0)
+            if self.taskService.logTime(task_id, timeLogged):
+                self.set_status(200)
+            else:
+                self.set_status(500)
+            #update history message
+            message = self.get_current_user() \
+                        + " logged " \
+                        + timeLogged \
+                        + " on task " \
+                        + self.taskService.getTask(task_id).title \
+                        + " from project " \
+                        + self.projectService.getProject(pid).title
 
         self.historyService.updateHistory(
             self.get_current_user_id(),
@@ -245,11 +282,11 @@ class IssueHandler(BaseHandler):
         )
 
 
-
 class ReportHandler(BaseHandler):
     """
         Handle reports and stuff.
     """
+
     @tornado.web.authenticated
     def get(self):
         self.render("reports.html",

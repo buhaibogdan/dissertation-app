@@ -70,3 +70,8 @@ class TaskEntity(Base):
     @minutes_remaining.setter
     def minutes_remaining(self, minutes_remaining):
         self._minutes_remaining = TimeConvertService.convertToMinutes(minutes_remaining)
+
+    def logTime(self, minutes):
+        self._minutes_remaining = self._minutes_remaining - minutes
+        if self._minutes_remaining < 0:
+            self._minutes_estimated = 0

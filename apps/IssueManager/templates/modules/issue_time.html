@@ -1,0 +1,25 @@
+
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="logWorkModalLabel">Log work on {{task.title}}</h3>
+    </div>
+    <div class="modal-body new-issue-modal">
+        <form method="post" id="issue_log_work" name="issue_log_work">
+            <input type="hidden" readonly="readonly" value="{{task.id}}" name="task_id_log" id="task_id_log" />
+            <input type="hidden" readonly="readonly" value="{{task.project.pid}}" name="pid" />
+            {% module xsrf_form_html() %}
+            <label>Log work</label>
+            <input type="text" name="log_work_value" value="" placeholder="eg 30m, 1h, 2d, 1w ..." required="required" />
+            <label>Reduce remaining by</label>
+            <label class="checkbox">
+                <input type="checkbox" name="log_work_auto_adjust" checked="checked" id="log_work_auto_adjust" />Auto
+            </label>
+            <input type="text" disabled="disabled" name="log_work_adjust_by" value="" placeholder="eg 30m, 1h, 2d, 1w ..." id="log_work_adjust_by" />
+
+        </form>
+        <div class="error invisible" id="error_work_not_logged">Could not save your work log at the moment. Please try again later.</div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
+        <button class="btn btn-primary" id="issue_log">Log</button>
+    </div>

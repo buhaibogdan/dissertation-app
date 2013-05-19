@@ -40,8 +40,14 @@
             <div class="task task-to-do task-type-{{task.type_id}}" data-id="{{task.id}}">
                 <div class="task-title">
                     <span>{{task.title}}</span>
-                    <i class="icon-pencil"></i>
-                    <button class="close">x</button>
+                    <div class="btn-group float-right">
+                        <button class="btn btn-mini dropdown-toggle more-actions-btn" data-toggle="dropdown"><span class="icon-align-justify"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="log-work" data-target="#logWorkModal" data-toggle="modal">Log work</a></li>
+                            <li><a href="#" class="edit-task">Edit</a></li>
+                            <li><a href="#" class="remove-task">Remove</a></li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="task-info">
                     <div class='task-info-row'>
@@ -50,11 +56,19 @@
                     </div>
                     <div class='task-info-row'>
                         <div class='task-info-name'>Time</div>
-                        <div class='task-info-value'>{{task.minutes_remaining}} / {{task.minutes_estimated}}</div>
+                        <div class='task-info-value'>
+                            {{task.minutes_remaining}} / {{task.minutes_estimated}}
+                        </div>
                     </div>
                     <div class='task-info-row'>
                         <div class='task-info-name'>Assigned to:</div>
-                        <div class='task-info-value'>Username</div>
+                        <div class='task-info-value'>
+                            {% if task.assignee.username == username %}
+                                me
+                            {% else %}
+                                {{task.assignee.username}}
+                            {% end %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -68,8 +82,14 @@
             <div class="task task-in-progress task-type-{{task.type_id}}" data-id="{{task.id}}">
                 <div class="task-title">
                     <span>{{task.title}}</span>
-                    <i class="icon-pencil"></i>
-                    <button class="close">x</button>
+                    <div class="btn-group float-right">
+                        <button class="btn btn-mini dropdown-toggle more-actions-btn" data-toggle="dropdown"><span class="icon-align-justify"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="log-work" data-target="#logWorkModal" data-toggle="modal">Log work</a></li>
+                            <li><a href="#" class="edit-task">Edit</a></li>
+                            <li><a href="#" class="remove-task">Remove</a></li>
+                        </ul>
+                    </div>
                 </div>
                 <div class="task-info">
                     <div class='task-info-row'>
@@ -82,7 +102,13 @@
                     </div>
                     <div class='task-info-row'>
                         <div class='task-info-name'>Assigned to:</div>
-                        <div class='task-info-value'>Username</div>
+                        <div class='task-info-value'>
+                            {% if task.assignee.username == username %}
+                                me
+                            {% else %}
+                                {{task.assignee.username}}
+                            {% end %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -96,8 +122,15 @@
             <div class="task task-done task-type-{{task.type_id}}" data-id="{{task.id}}">
                 <div class="task-title">
                     <span>{{task.title}}</span>
-                    <i class="icon-pencil"></i>
-                    <button class="close">x</button></div>
+                    <div class="btn-group float-right">
+                        <button class="btn btn-mini dropdown-toggle more-actions-btn" data-toggle="dropdown"><span class="icon-align-justify"></span></button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" class="log-work" data-target="#logWorkModal" data-toggle="modal">Log work</a></li>
+                            <li><a href="#" class="edit-task">Edit</a></li>
+                            <li><a href="#" class="remove-task">Remove</a></li>
+                        </ul>
+                    </div>
+                </div>
                 <div class="task-info">
                     <div class='task-info-row'>
                         <div class='task-info-name'>Description</div>
@@ -109,7 +142,13 @@
                     </div>
                     <div class='task-info-row'>
                         <div class='task-info-name'>Assigned to:</div>
-                        <div class='task-info-value'>Username</div>
+                        <div class='task-info-value'>
+                            {% if task.assignee.username == username %}
+                                me
+                            {% else %}
+                                {{task.assignee.username}}
+                            {% end %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -119,7 +158,7 @@
 </div>
 
 <div class="clear"></div>
-<!-- Modal -->
+<!-- Modal new issue-->
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -167,4 +206,8 @@
     </div>
 </div>
 <!-- /Modal -->
+<!-- Modal log time-->
+<div id="logWorkModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="logWorkModal" aria-hidden="true">
+
+</div>
 {% end %}

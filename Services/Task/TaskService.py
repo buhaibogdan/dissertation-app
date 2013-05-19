@@ -1,5 +1,6 @@
 from TaskDAO import TaskDAO
 from sqlalchemy.exc import SQLAlchemyError
+from Services.Utils.TimeConvertService import TimeConvertService
 import re
 
 
@@ -60,3 +61,17 @@ class TaskService(object):
 
     def updateTaskStatus(self, id, status):
         self.__DAO.updateTaskStatus(id, status)
+
+    def logTime(self, task_id, timeLogged, adjustBy=0):
+        try:
+            task = self.getTask(task_id)
+            if adjustBy != 0:
+                task.logTime(TimeConvertService.convertToMinutes(adjustBy))
+            else:
+                task.logTime(TimeConvertService.convertToMinutes(timeLogged))
+            self.insertOrUpdateTask(task)
+            return True
+        except AttributeError:
+            return False
+        except SQLAlchemyError:
+            return False

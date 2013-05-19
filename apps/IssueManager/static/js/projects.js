@@ -27,6 +27,7 @@ Projects.init = function(){
                 $('#project_info_release_date').html(project.release_date)
                 $('#project_info_people_involved').html(project.people)
                 $loadingImg.css("visibility", "hidden");
+                WS.getProjectHistory(pid);
             }
         });
     });
