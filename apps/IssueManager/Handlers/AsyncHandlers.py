@@ -25,6 +25,9 @@ class BaseAsyncHandler(tornado.websocket.WebSocketHandler):
 
 
 class HistoryHandler(BaseAsyncHandler):
+    def initialize(self):
+        pass
+
     def open(self):
         self.getAllHistory()
 
@@ -50,6 +53,9 @@ class HistoryHandler(BaseAsyncHandler):
 
 
 class UserHistoryHandler(BaseAsyncHandler):
+    def initialize(self):
+        pass
+
     def open(self, uid):
         self.uid = uid
         self.getUserHistory(uid)
@@ -76,6 +82,9 @@ class UserHistoryHandler(BaseAsyncHandler):
 
 
 class ProjectHistoryHandler(BaseAsyncHandler):
+    def initialize(self):
+        pass
+
     def open(self, pid):
         self.pid = pid
         self.getProjectHistory(pid)

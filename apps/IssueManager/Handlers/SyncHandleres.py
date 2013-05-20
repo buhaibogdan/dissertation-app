@@ -123,19 +123,31 @@ class ProjectsHandler(BaseHandler):
         pDescription = self.get_argument('project_description', '')
         pRelease = self.get_argument('project_release', None)
         notify = self.get_argument('notify', False) #TODO: handle this
+        if pid is None:
+            message = self.get_current_user() + " created a new project: " + pTitle + "."
+            eventId = self.eventService.getEventByName(self.eventService.add_project).id
+        else:
+            message = self.get_current_user() + " updated project " + pTitle + "."
+            eventId = self.eventService.getEventByName(self.eventService.add_project).id
         try:
-            self.projectService.insertOrUpdateProject(pid, pTitle, pDescription, pOwnerId, pRelease)
+            pid = self.projectService.insertOrUpdateProject(pid, pTitle, pDescription, pOwnerId, pRelease)
             self.set_status(201)
         except SQLAlchemyError as err:
             self.logService.log_error("SQLAlchemyError while saving project: " + err.message)
             self.set_status(500)
+            self.finish()
 
-            #update history
-            #self.historyService.updateHistory()
-            #send out emails
+        #update history
+        self.historyService.updateHistory(
+            self.get_current_user_id(),
+            pid,
+            eventId,
+            message
+        )
+        #send out emails
         if notify:
             self.historyService.sendEmails(self.get_current_user_id(), pid, self.get_current_user()
-                                                                            + " created a new task.")
+                                                                            + " created a new project: " + pTitle + ".")
 
 
 class ProjectHandler(BaseHandler):
@@ -259,20 +271,20 @@ class IssueHandler(BaseHandler):
             if not timeLogged:
                 self.set_status(400)
                 self.finish()
-            adjustAuto = self.get_argument('log_work_auto_adjust', True)
+
             adjustBy = self.get_argument('log_work_adjust_by', 0)
-            if self.taskService.logTime(task_id, timeLogged):
+            if self.taskService.logTime(task_id, timeLogged, adjustBy):
                 self.set_status(200)
             else:
                 self.set_status(500)
-            #update history message
+                #update history message
             message = self.get_current_user() \
-                        + " logged " \
-                        + timeLogged \
-                        + " on task " \
-                        + self.taskService.getTask(task_id).title \
-                        + " from project " \
-                        + self.projectService.getProject(pid).title
+                      + " logged " \
+                      + timeLogged \
+                      + " on task " \
+                      + self.taskService.getTask(task_id).title \
+                      + " from project " \
+                      + self.projectService.getProject(pid).title
 
         self.historyService.updateHistory(
             self.get_current_user_id(),
@@ -280,6 +292,24 @@ class IssueHandler(BaseHandler):
             self.eventService.getEventByName(EventService.update_task).id,
             message
         )
+
+
+class UserHandler(BaseHandler):
+    def get(self, uid = None):
+        if uid:
+            user = self.userService.getUserById(uid)
+
+        else:
+            users = self.userService.getUsers()
+
+    def put(self):
+        pass
+
+    def delete(self, uid):
+        pass
+
+    def post(self):
+        pass
 
 
 class ReportHandler(BaseHandler):

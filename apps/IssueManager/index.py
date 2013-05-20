@@ -35,6 +35,8 @@ class Application(tornado.web.Application):
                     (r"/history",                   AsyncHandlers.HistoryHandler),
                     (r"/history/user/(\d+)",        AsyncHandlers.UserHistoryHandler),
                     (r"/history/project/(\d+)",     AsyncHandlers.ProjectHistoryHandler),
+                    (r"/users$",                    SyncHandleres.UserHandler),
+                    (r"/users/(\d+)",               SyncHandleres.UserHandler),
                     (r"/reports",                   SyncHandleres.ReportHandler)]
         settings = dict(template_path = os.path.join(os.path.dirname(__file__), "templates"),
                         static_path=os.path.join(os.path.dirname(__file__), "static"),

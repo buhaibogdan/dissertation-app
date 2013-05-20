@@ -17,4 +17,5 @@ class ProjectDAO(object):
 
     def insertOrUpdateProject(self, project):
         db_session.add(project)
-        return db_session.commit()
+        db_session.commit()
+        return project.pid

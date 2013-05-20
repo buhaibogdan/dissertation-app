@@ -5,20 +5,26 @@ import json
 from Services.History.HistoryDAO import HistoryDAO
 from Services.History.HistoryService import HistoryService
 from Services.Log.LogService import LogService
+import logging
+logging.basicConfig()
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
     host='localhost'))
 channel = connection.channel()
 channel.exchange_declare(exchange='history', type='topic')
 
+result = channel.queue_declare(exclusive=True)
+queue_name = result.method.queue
+
 binding_keys = sys.argv[1:]
 if not binding_keys:
     print >> sys.stderr, "Usage: %s [binding_key]..." % (sys.argv[0],)
     sys.exit(1)
 
+print binding_keys
 for binding_key in binding_keys:
     channel.queue_bind(exchange='history',
-                       queue='history_queue',
+                       queue=queue_name,
                        routing_key=binding_key)
 
 print ' [*] Waiting for events to fire. To cancel press CTRL+C'
@@ -30,6 +36,9 @@ logService = LogService()
 def callback(ch, method, properties, body):
     print " [x] Received %r wih key %r" % (body, method.routing_key)
     hEvent = hService.convertToEntity(body)
+    print '----------------------------------'
+    print method.routing_key
+    print '----------------------------------'
     if method.routing_key == 'history.events':
         if hEvent:
             dao = HistoryDAO()
@@ -49,8 +58,7 @@ def callback(ch, method, properties, body):
 
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
-
 channel.basic_qos(prefetch_count=1)
-channel.basic_consume(callback, queue='history_queue')
+channel.basic_consume(callback, queue=queue_name)
 
 channel.start_consuming()
