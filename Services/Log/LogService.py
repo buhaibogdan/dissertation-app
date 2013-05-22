@@ -26,3 +26,6 @@ class LogService(object):
 
     def __del__(self):
         self.connection.close()
+
+
+logService = LogService()

@@ -12,7 +12,7 @@ from Services.User.UserService import UserService
 from Services.UserTask.UserTaskService import UserTaskService
 from Services.Task.TaskService import TaskService
 from Services.Task.TaskDAO import TaskDAO
-from Services.Log.LogService import LogService
+from Services.Log.LogService import logService
 from Services.Task.TaskEntity import TaskEntity
 from Services.History.HistoryService import HistoryService
 from Services.Event.EventService import EventService
@@ -44,7 +44,7 @@ class BaseHandler(tornado.web.RequestHandler):
 
     @property
     def logService(self):
-        return LogService()
+        return logService
 
     @property
     def historyService(self):
@@ -295,12 +295,15 @@ class IssueHandler(BaseHandler):
 
 
 class UserHandler(BaseHandler):
-    def get(self, uid = None):
+    def get(self, uid=None):
+        self.set_header('Content-Type', 'application/json')
         if uid:
             user = self.userService.getUserById(uid)
-
+            response = self.userService.userToJson(user)
         else:
             users = self.userService.getUsers()
+            response = self.userService.usersToJson(users)
+        self.write(response)
 
     def put(self):
         pass
