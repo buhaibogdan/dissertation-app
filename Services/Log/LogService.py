@@ -1,4 +1,5 @@
 import pika
+from LogDB import logDB
 
 
 class LogService(object):
@@ -26,6 +27,27 @@ class LogService(object):
 
     def __del__(self):
         self.connection.close()
+
+    def log_error_db(self, message):
+        logDB.insertError(message)
+
+    def log_warning_db(self, message):
+        logDB.insertWarning(message)
+
+    def log_notice_db(self, message):
+        logDB.insertNotice(message)
+
+    def getErrors(self, startDate=None, endDate=None):
+        errors = logDB.getErrors()
+        return errors
+
+    def getWarnings(self, startDate=None, endDate=None):
+        warnings = logDB.getWarnings()
+        return warnings
+
+    def getNotices(self, startDate=None, endDate=None):
+        notices = logDB.getNotices()
+        return notices
 
 
 logService = LogService()

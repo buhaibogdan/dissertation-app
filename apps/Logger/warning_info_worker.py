@@ -1,4 +1,7 @@
 import pika
+import sys
+sys.path.append('/home/bb/PycharmProjects/dissertation-app')
+from Services.Log.LogService import logService
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
     host='localhost'))
@@ -22,6 +25,11 @@ print ' [*] Waiting for logs. To exit press CTRL+C'
 
 def callback(ch, method, properties, body):
     print " [%r:] %r" % (method.routing_key, body,)
+    if method.routing_key == 'warning':
+        logService.log_warning_db(body)
+    elif method.routing_key == 'info':
+        logService.log_notice_db(body)
+
 
 channel.basic_consume(callback,
                       queue=queue_name,
