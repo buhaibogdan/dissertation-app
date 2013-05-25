@@ -18,20 +18,17 @@
 </nav>
 {% end %}
 {% block content %}
-<section class="my_recent_actions ">
-    <ul>
-        <li>Modified x</li>
-        <li>Modified y</li>
-    </ul>
-</section>
-<section class="projects_changes">
-    <ul>
-        <li>Modified x</li>
-        <li>Modified y</li>
-    </ul>
-</section>
-<div class="clear"></div>
-<p>Well this is the reports page!</p>
-this is some stuff
-</div>
+<div>Select a project for more specific information.</div>
+{% module ProjectSelectModule(projects, 'projects_list', pid) %}
+<p>Project name</p>
+        <ul class="project-report">
+            <li>Number of tasks <span id="nr_tasks">5</span></li>
+            <li>Closed tasks <span id="nr_closed_tasks">3</span></li>
+            <li>Tasks in progress <span id="nr_tasks_in_progress">2</span></li>
+            <li>Tasks to do <span id="nr_tasks_to_do">2</span></li>
+            <li>Number of bugs <span id="nr_bugs">1</span></li>
+            <li>Most active user <span id="most_active_user">bb</span></li>
+            <li>Time logged <span id="time_logged">2w</span></li>
+            <li>Time remaining <span id="time_remaining">3d</span></li>
+        </ul>
 {% end %}

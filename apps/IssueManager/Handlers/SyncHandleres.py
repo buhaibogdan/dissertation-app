@@ -322,7 +322,11 @@ class ReportHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self):
+        projects = self.projectService.getProjects()
+        pid = self.get_argument('pid', 0)
         self.render("reports.html",
                     username=self.get_current_user(),
-                    uid=self.get_current_user_id())
+                    uid=self.get_current_user_id(),
+                    projects=projects,
+                    pid=pid)
 
