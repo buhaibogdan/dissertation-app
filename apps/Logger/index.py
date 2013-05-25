@@ -8,14 +8,13 @@ import tornado.options
 import tornado.web
 import tornado.template
 
-from Services.Database.db import *
 import apps.IssueManager.ui_modules.modules
-
+from Services.Log.LogService import logService
 
 from tornado.options import define, options
 
 
-define("port", default=8000, help="run on the given port", type=int)
+define("port", default=7999, help="run on the given port", type=int)
 
 
 class Application(tornado.web.Application):
@@ -35,12 +34,13 @@ class Application(tornado.web.Application):
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
-        pass
+        errors = logService.getErrors()
+        warnings = logService.getWarnings()
+        notices = logService.getNotices()
+        self.render("index.html", errors=errors, warnings=warnings, notices=notices)
 
 
 if __name__ == "__main__":
-    DB.init()
-
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(Application())
     http_server.listen(options.port)

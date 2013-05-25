@@ -1,0 +1,170 @@
+* {margin:0px; padding:0px;}
+
+a {
+    font-weight: bold;
+    color: rgb(132, 132, 219);
+}
+a:hover {
+    color: rgb(106, 91, 219);
+    text-decoration: none;
+    border-bottom: 1px dotted rgb(106, 91, 219);
+}
+nav a:hover{
+    text-decoration: none;
+    border-bottom: none;
+}
+.logged_username {
+    font-weight: bold;
+    color: rgb(132, 132, 219);
+    display:inline;
+}
+
+.top_status {
+    background-color: rgb(237, 236, 245);
+    padding: 5px 10px;
+    text-align: right;
+}
+
+header {
+    background-color: rgb(237, 236, 245);
+    height:80px;
+}
+
+.header-text{
+    color:rgb(84, 101, 224);
+    padding: 30px;
+    font-size: 26px;
+}
+
+footer {
+    background-color: rgb(237, 236, 245);
+    height:30px;
+    font-size: 12px;
+    padding: 20px;
+    text-align: center;
+}
+
+nav {
+    background-color: rgb(248, 247, 253)
+}
+nav .navbar {
+    margin-bottom: 0px;
+}
+
+.main_content {
+    background-color: rgb(248, 247, 253);
+    padding: 20px;
+}
+
+
+section.all-recent-actions,
+section.project-recent-actions,
+section.my-recent-actions {
+    border: 1px solid #078697;
+    display: inline-block;
+    width: 380px;
+    background-color: white;
+    min-height: 100px;
+    margin-left: 50px;
+    list-style-type: circle;
+    max-height: 500px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.activity-title {
+    width: 380px;
+    text-align: center;
+    border-bottom: 1px solid #078697;
+    background-color: #87e6e6;
+}
+
+.clear {
+    clear: both;
+}
+
+.row {
+    margin: 5px 7px;
+    background-color:rgb(238, 231, 179)
+}
+
+.row-label{
+    display: inline-block;
+    padding-right: 5px;
+    color: #6b6a68;
+    width: 115px;
+    text-align: right;
+    vertical-align: top;
+}
+
+.row-value {
+    display:inline-block;
+    width:70%;
+
+}
+
+.hidden {
+    display: none;
+}
+
+section .blue-background{
+    background-color: rgb(167, 238, 241)
+}
+
+.float-right {
+    float: right;
+}
+.float-left {
+    float: left;
+}
+
+.errors-container {
+    padding: 13px;
+    border: 2px solid black;
+    margin: 15px 3px;
+    height: 220px;
+    background-color: rgb(235, 200, 203);
+    overflow:auto;
+}
+
+.warnings-container {
+    padding: 13px;
+    border: 2px solid red;
+    margin: 15px 3px;
+    height: 220px;
+    background-color: rgb(212, 213, 191);
+    overflow:auto;
+}
+
+.notices-container {
+    padding: 13px;
+    border: 2px solid blue;
+    margin: 15px 3px;
+    height: 220px;
+    background-color: rgb(180, 189, 194);
+    overflow:auto;
+
+}
+
+.error .message{
+    color:black;
+    font-weight: bold;
+}
+
+.notice .message {
+    color: blue;
+}
+
+.warning .message {
+   color: red;
+}
+
+.date {
+    display: inline-block;
+    width:145px;
+}
+
+.message {
+    display: inline-block;
+    width: 700px;
+}

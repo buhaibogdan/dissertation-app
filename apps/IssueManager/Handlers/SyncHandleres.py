@@ -61,7 +61,7 @@ class BaseHandler(tornado.web.RequestHandler):
         return self.get_secure_cookie('uid')
 
     def check_xsrf_cookie(self):
-        _xsrf = self.get_argument('_xsrf', 'ciuciu')
+        _xsrf = self.get_argument('_xsrf', '')
         return True
 
 

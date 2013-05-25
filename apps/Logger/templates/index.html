@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+    <title>Logger app</title>
+    {% block css %}
+    <link rel="stylesheet" type="text/css" href="{{static_url('css/bootstrap.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{static_url('css/main.css')}}"/>
+    <link rel="stylesheet" type="text/css" href="{{static_url('css/jquery-ui-1.10.2.custom.min.css')}}"/>
+    {% end %}
+    {% block scripts %}
+    <script src="{{static_url('js/underscore-min.js')}}" type="text/javascript"></script>
+    <script src="{{static_url('js/jquery-1.9.1.js')}}" type="text/javascript"></script>
+    <script src="{{static_url('js/bootstrap.js')}}" type="text/javascript"></script>
+    <script src="{{static_url('js/jquery-ui-1.10.2.custom.min.js')}}" type="text/javascript"></script>
+    <script src="{{static_url('js/main.js')}}" type="text/javascript"></script>
+    {% end %}
+    {% block page_scripts %}
+    {% end %}
+</head>
+<body>
+
+<header>
+    <div class="header-text">Logger app</div>
+</header>
+<div class="main_content">
+    {% block content %}
+    <div class="errors-container">
+        {% for error in errors %}
+            <div class="error">
+                <div class="date">{{error['date']}}</div>
+                <div class="message">{{error['message']}}</div>
+            </div>
+        {% end %}
+    </div>
+
+    <div class="warnings-container">
+        {% for warning in warnings %}
+        <div class="warning">
+            <div class="date">{{warning['date']}}</div>
+            <div class="message">{{warning['message']}}</div>
+        </div>
+        {% end %}
+    </div>
+
+    <div class="notices-container">
+        {% for notice in notices %}
+        <div class="notice">
+            <div class="date">{{notice['date']}}</div>
+            <div class="message">{{notice['message']}}</div>
+        </div>
+        {% end %}
+    </div>
+
+
+    {% end %}
+</div>
+{% block footer %}
+    <footer>
+        <p>
+            <small>Logger app, 2013, Bogdan Buhai</small>
+        </p>
+    </footer>
+    {% end %}
+</body>
+</html>

@@ -39,15 +39,39 @@ class LogService(object):
 
     def getErrors(self, startDate=None, endDate=None):
         errors = logDB.getErrors()
-        return errors
+        errorsDict = []
+
+        for error in errors:
+            errorsDict.append({
+                'date': error[2][:19],
+                'message': error[1]
+            })
+
+        return errorsDict
 
     def getWarnings(self, startDate=None, endDate=None):
         warnings = logDB.getWarnings()
-        return warnings
+        warningsDict = []
+
+        for warning in warnings:
+            warningsDict.append({
+                'date': warning[2][:19],
+                'message': warning[1]
+            })
+
+        return warningsDict
 
     def getNotices(self, startDate=None, endDate=None):
         notices = logDB.getNotices()
-        return notices
+        noticesDict = []
+
+        for notice in notices:
+            noticesDict.append({
+                'date': notice[2][:19],
+                'message': notice[1]
+            })
+
+        return noticesDict
 
 
 logService = LogService()
