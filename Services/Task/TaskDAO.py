@@ -7,7 +7,7 @@ class TaskDAO(object):
         pass
 
     def getTasksForProject(self, pid):
-        return db_session.query(TaskEntity).filter(TaskEntity.project_id == pid)
+        return db_session.query(TaskEntity).filter(TaskEntity.project_id == pid).all()
 
     def getTask(self, id):
         return db_session.query(TaskEntity).filter(TaskEntity.id == id).first()

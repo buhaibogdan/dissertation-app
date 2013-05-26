@@ -4,55 +4,14 @@ import tornado.web
 from apps.IssueManager.ui_modules.modules import UserLinkModule
 from apps.IssueManager.ui_modules.modules import IssueLogWorkModule
 from sqlalchemy.exc import SQLAlchemyError
-from Services.UserProject.UserProjectService import UserProjectService
-from Services.Project.ProjectService import ProjectService
-from Services.Project.ProjectDAO import ProjectDAO
-from Services.User.UserDAO import UserDAO
-from Services.User.UserService import UserService
-from Services.UserTask.UserTaskService import UserTaskService
-from Services.Task.TaskService import TaskService
-from Services.Task.TaskDAO import TaskDAO
-from Services.Log.LogService import logService
 from Services.Task.TaskEntity import TaskEntity
 from Services.History.HistoryService import HistoryService
 from Services.Event.EventService import EventService
+from Services.Host.HostService import hostService
+from Services.Report.ReportServiceClient import ReportServiceClient
 
 
 class BaseHandler(tornado.web.RequestHandler):
-    """ This is lazy initialization
-    """
-
-    @property
-    def userService(self):
-        return UserService(UserDAO())
-
-    @property
-    def projectService(self):
-        return ProjectService(ProjectDAO())
-
-    @property
-    def userProjectService(self):
-        return UserProjectService()
-
-    @property
-    def taskService(self):
-        return TaskService(TaskDAO())
-
-    @property
-    def userTaskService(self):
-        return UserTaskService()
-
-    @property
-    def logService(self):
-        return logService
-
-    @property
-    def historyService(self):
-        return HistoryService()
-
-    @property
-    def eventService(self):
-        return EventService()
 
     def get_current_user(self):
         return self.get_secure_cookie("username")
@@ -83,7 +42,7 @@ class LoginHandler(BaseHandler):
     def post(self, *args, **kwargs):
         username = self.get_argument('username')
         password = self.get_argument('password')
-        user = self.userService.checkCredentials(username, password)
+        user = hostService.userService.checkCredentials(username, password)
         if user is not False:
             self.set_secure_cookie("username", user.username)
             self.set_secure_cookie('uid', str(user.uid))
@@ -104,9 +63,9 @@ class LogoutHandler(BaseHandler):
 class ProjectsHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        projects = self.projectService.getProjects()
-        users = self.userService.getUsers()
-        usersInvolved = self.userProjectService.getUsersForProject(1)
+        projects = hostService.projectService.getProjects()
+        users = hostService.userService.getUsers()
+        usersInvolved = hostService.userProjectService.getUsersForProject(1)
 
         self.render("projects.html",
                     projects=projects,
@@ -125,20 +84,20 @@ class ProjectsHandler(BaseHandler):
         notify = self.get_argument('notify', False) #TODO: handle this
         if pid is None:
             message = self.get_current_user() + " created a new project: " + pTitle + "."
-            eventId = self.eventService.getEventByName(self.eventService.add_project).id
+            eventId = hostService.eventService.getEventByName(hostService.eventService.add_project).id
         else:
             message = self.get_current_user() + " updated project " + pTitle + "."
-            eventId = self.eventService.getEventByName(self.eventService.add_project).id
+            eventId = hostService.eventService.getEventByName(hostService.eventService.add_project).id
         try:
-            pid = self.projectService.insertOrUpdateProject(pid, pTitle, pDescription, pOwnerId, pRelease)
+            pid = hostService.projectService.insertOrUpdateProject(pid, pTitle, pDescription, pOwnerId, pRelease)
             self.set_status(201)
         except SQLAlchemyError as err:
-            self.logService.log_error("SQLAlchemyError while saving project: " + err.message)
+            hostService.logService.log_error("SQLAlchemyError while saving project: " + err.message)
             self.set_status(500)
             self.finish()
 
         #update history
-        self.historyService.updateHistory(
+        hostService.historyService.updateHistory(
             self.get_current_user_id(),
             pid,
             eventId,
@@ -146,15 +105,15 @@ class ProjectsHandler(BaseHandler):
         )
         #send out emails
         if notify:
-            self.historyService.sendEmails(self.get_current_user_id(), pid, self.get_current_user()
+            hostService.historyService.sendEmails(self.get_current_user_id(), pid, self.get_current_user()
                                                                             + " created a new project: " + pTitle + ".")
 
 
 class ProjectHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, pid):
-        project = self.projectService.getProjectAsJson(pid)
-        peopleInvolved = self.userProjectService.getUsersForProject(pid)
+        project = hostService.projectService.getProjectAsJson(pid)
+        peopleInvolved = hostService.userProjectService.getUsersForProject(pid)
         peopleInvolvedHtml = ''
         ui = UserLinkModule(self)
 
@@ -178,13 +137,13 @@ class IssuesHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, pid=None):
         h = HistoryService()
-        projects = self.projectService.getProjects()
+        projects = hostService.projectService.getProjects()
         # use first project if no parameter pid is passed
         pid = self.get_argument('pid', projects[0].pid) if pid is None else pid
-        tasksToDo = self.taskService.getTasksToDoForProject(pid)
-        tasksInProgress = self.taskService.getTasksInProgressForProject(pid)
-        tasksDone = self.taskService.getTasksClosedForProject(pid)
-        usersInProject = self.userProjectService.getUsersForProject(pid)
+        tasksToDo = hostService.taskService.getTasksToDoForProject(pid)
+        tasksInProgress = hostService.taskService.getTasksInProgressForProject(pid)
+        tasksDone = hostService.taskService.getTasksClosedForProject(pid)
+        usersInProject = hostService.userProjectService.getUsersForProject(pid)
 
         self.render("issues.html",
                     username=self.get_current_user(),
@@ -211,22 +170,22 @@ class IssuesHandler(BaseHandler):
         task = TaskEntity(title, description, assignee_id, reporter_id, pid, estimate, complexity, priority, task_type)
         if id != 0:
             task.id = id
-        result = self.taskService.insertOrUpdateTask(task)
+        result = hostService.taskService.insertOrUpdateTask(task)
         if result is False:
             self.set_status(500)
         self.set_status(201)
 
         #update history
-        self.historyService.updateHistory(
+        hostService.historyService.updateHistory(
             self.get_current_user_id(),
             pid,
-            self.eventService.getEventByName(EventService.create_task).id,
+            hostService.eventService.getEventByName(EventService.create_task).id,
             self.get_current_user() + ' created task with title '
-            + title + ' for project ' + self.projectService.getProject(pid).title
+            + title + ' for project ' + hostService.projectService.getProject(pid).title
         )
         #send out emails
         if notify:
-            self.historyService.sendEmails(self.get_current_user_id(), pid, self.get_current_user()
+            hostService.historyService.sendEmails(self.get_current_user_id(), pid, self.get_current_user()
                                                                             + " created a new task.")
 
 
@@ -237,7 +196,7 @@ class IssueHandler(BaseHandler):
 
     @tornado.web.authenticated
     def get(self, id):
-        task = self.taskService.getTask(id)
+        task = hostService.taskService.getTask(id)
         module = IssueLogWorkModule(self)
         self.write(module.render(task))
 
@@ -248,7 +207,7 @@ class IssueHandler(BaseHandler):
     @tornado.web.authenticated
     def delete(self, task_id):
         try:
-            self.taskService.deleteTask(task_id)
+            hostService.taskService.deleteTask(task_id)
         except SQLAlchemyError as err:
             raise err
 
@@ -258,14 +217,14 @@ class IssueHandler(BaseHandler):
         pid = self.get_argument('pid')
 
         if status is not None:
-            self.taskService.updateTaskStatus(task_id, status)
+            hostService.taskService.updateTaskStatus(task_id, status)
             self.set_status(200)
             #update history message
             message = self.get_current_user() \
                       + " updated task " \
-                      + self.taskService.getTask(task_id).title \
+                      + hostService.taskService.getTask(task_id).title \
                       + " from project " \
-                      + self.projectService.getProject(pid).title
+                      + hostService.projectService.getProject(pid).title
         else:
             timeLogged = self.get_argument('log_work_value', 0)
             if not timeLogged:
@@ -273,7 +232,7 @@ class IssueHandler(BaseHandler):
                 self.finish()
 
             adjustBy = self.get_argument('log_work_adjust_by', 0)
-            if self.taskService.logTime(task_id, timeLogged, adjustBy):
+            if hostService.taskService.logTime(task_id, timeLogged, adjustBy):
                 self.set_status(200)
             else:
                 self.set_status(500)
@@ -282,14 +241,14 @@ class IssueHandler(BaseHandler):
                       + " logged " \
                       + timeLogged \
                       + " on task " \
-                      + self.taskService.getTask(task_id).title \
+                      + hostService.taskService.getTask(task_id).title \
                       + " from project " \
-                      + self.projectService.getProject(pid).title
+                      + hostService.projectService.getProject(pid).title
 
-        self.historyService.updateHistory(
+        hostService.historyService.updateHistory(
             self.get_current_user_id(),
             pid,
-            self.eventService.getEventByName(EventService.update_task).id,
+            hostService.eventService.getEventByName(EventService.update_task).id,
             message
         )
 
@@ -298,11 +257,11 @@ class UserHandler(BaseHandler):
     def get(self, uid=None):
         self.set_header('Content-Type', 'application/json')
         if uid:
-            user = self.userService.getUserById(uid)
-            response = self.userService.userToJson(user)
+            user = hostService.userService.getUserById(uid)
+            response = hostService.userService.userToJson(user)
         else:
-            users = self.userService.getUsers()
-            response = self.userService.usersToJson(users)
+            users = hostService.userService.getUsers()
+            response = hostService.userService.usersToJson(users)
         self.write(response)
 
     def put(self):
@@ -320,13 +279,17 @@ class ReportHandler(BaseHandler):
         Handle reports and stuff.
     """
 
-    @tornado.web.authenticated
+    #@tornado.web.authenticated
     def get(self):
-        projects = self.projectService.getProjects()
+        projects = hostService.projectService.getProjects()
         pid = self.get_argument('pid', 0)
+        reportServiceClient = ReportServiceClient()
+        projectReport = reportServiceClient.call_generate_project_report(pid)
+
         self.render("reports.html",
                     username=self.get_current_user(),
                     uid=self.get_current_user_id(),
                     projects=projects,
-                    pid=pid)
+                    pid=pid,
+                    projectReport=projectReport)
 
