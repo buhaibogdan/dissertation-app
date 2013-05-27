@@ -9,6 +9,7 @@ from Services.History.HistoryService import HistoryService
 from Services.Event.EventService import EventService
 from Services.Host.HostService import hostService
 from Services.Report.ReportServiceClient import ReportServiceClient
+from Services.Report.ReportService import ReportService
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -27,6 +28,12 @@ class BaseHandler(tornado.web.RequestHandler):
 class IndexHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        from Services.Utils.EmailService import EmailService
+        es = EmailService()
+        es.setTo("buhaibogdan@yahoo.com")
+        es.setBody("just some text for test here")
+        es.setSubject("Test")
+        es.send()
         self.render("index.html",
                     username=self.get_current_user(),
                     uid=self.get_current_user_id())
@@ -283,13 +290,50 @@ class ReportHandler(BaseHandler):
     def get(self):
         projects = hostService.projectService.getProjects()
         pid = self.get_argument('pid', 0)
+
+        # speed test for scalability
+        test = self.get_argument('test', None)
+        case = self.get_argument('case', None)
+        case1 = 0
+        case2 = 0
+        if test == 1 or test == '1':
+            import time
+            # case 1:
+            # default
+            start = time.time()
+
+            for i in range(0, 20):
+                s = ReportService()
+                projectReport = s.createReportForProject(pid)
+            finish = time.time()
+            case1 = finish-start
+
+            # case 2:
+            # rabbitmq with n workers
+            start = time.time()
+            for i in range(0, 20):
+                reportServiceClient = ReportServiceClient()
+                projectReport = reportServiceClient.call_generate_project_report(pid)
+            finish = time.time()
+            case2 = finish - start
+
+        # case 1 mai rapid decat case 2
+        # to note this
+        # also test with siege :D
+
+        # user amqp to generate pdf => alert user pdf is ready or send it to his email (might be better)
+
         reportServiceClient = ReportServiceClient()
         projectReport = reportServiceClient.call_generate_project_report(pid)
+        #s = ReportService()
+        #projectReport = s.createReportForProject(pid)
 
         self.render("reports.html",
                     username=self.get_current_user(),
                     uid=self.get_current_user_id(),
                     projects=projects,
                     pid=pid,
-                    projectReport=projectReport)
+                    projectReport=projectReport,
+                    case1=case1,
+                    case2=case2)
 
