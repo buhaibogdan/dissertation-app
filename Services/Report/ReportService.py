@@ -3,6 +3,7 @@ from Services.Host.HostService import hostService
 from collections import Counter
 from Services.Utils.TimeConvertService import TimeConvertService
 from time import sleep
+from fpdf import FPDF
 
 
 class ReportService(object):
@@ -33,7 +34,7 @@ class ReportService(object):
             users.append(event.user.username)
         # get fist element
         activeUser = Counter(users).most_common(1)[0][0]
-        return json.dumps({
+        return {
             'pid': pid,
             'title': project.title,
             'users': usersInvolved,
@@ -43,7 +44,7 @@ class ReportService(object):
             'mostActive': activeUser,
             'timeRemaining': TimeConvertService.convertFromMinutes(timeRemaining),
             'timeLogged': TimeConvertService.convertFromMinutes(timeLogged)
-        })
+        }
 
     def createGeneralReport(self):
         print "Generating general report..."
@@ -54,3 +55,23 @@ class ReportService(object):
         print "Generating user report..."
         sleep(3)
         print 'finished.'
+
+    def createReportForProjectPDF(self, pid):
+        data = self.createReportForProject(pid)
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font('Arial', 'B', 16)
+        pdf.cell(40, 10, data['title'])
+        pdf.set_font('Arial', size=12)
+        pdf.multi_cell(w=0, h=10, txt='')
+        pdf.multi_cell(0, 5, 'Users involved in project: ')
+        for user in data['users']:
+            pdf.multi_cell(0, 5, txt=" - " + user)
+        pdf.multi_cell(0, 5, 'Tasks closed: ' + str(data['nrTasksClosed']))
+        pdf.multi_cell(0, 5, 'Tasks in progress: ' + str(data['nrTasksInProgress']))
+        pdf.multi_cell(0, 5, 'Tasks to do: ' + str(data['nrTasksToDO']))
+        pdf.multi_cell(0, 5, 'Most active user is: ' + str(data['mostActive']))
+        pdf.multi_cell(0, 5, 'Total time logged: ' + str(data['timeLogged']))
+        pdf.multi_cell(0, 5, 'Time remaining for tasks: ' + str(data['timeRemaining']))
+        sleep(2)
+        pdf.output('generated_reports/project_' + pid + '_report.pdf', 'F')

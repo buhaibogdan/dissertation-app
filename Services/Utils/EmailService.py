@@ -1,6 +1,9 @@
 from conf.conf import SMTP_PORT, SMTP_SERVER, SMTP_USERNAME, SMTP_PASSWORD, SMTP_SYSTEM_SENDER
 import smtplib
 from Services.Log.LogService import logService
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+from email.MIMEImage import MIMEImage
 
 
 class EmailService(object):
@@ -47,3 +50,19 @@ class EmailService(object):
             "Content-Type: " + self.contentType
         ]
         return "\r\n".join(headers)
+
+
+"""
+
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+from email.MIMEImage import MIMEImage
+msg = MIMEMultipart()
+msg.attach(MIMEText(file("/home/myuser/sample.pdf").read())
+
+import smtplib
+mailer = smtplib.SMTP()
+mailer.connect()
+mailer.sendmail(from_, to, msg.as_string())
+mailer.close()
+"""

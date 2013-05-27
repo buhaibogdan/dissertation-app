@@ -30,10 +30,10 @@ class IndexHandler(BaseHandler):
     def get(self):
         from Services.Utils.EmailService import EmailService
         es = EmailService()
-        es.setTo("buhaibogdan@yahoo.com")
-        es.setBody("just some text for test here")
-        es.setSubject("Test")
-        es.send()
+        #es.setTo("buhaibogdan@yahoo.com")
+        #es.setBody("just some text for test here")
+        #es.setSubject("Test")
+        #es.send()
         self.render("index.html",
                     username=self.get_current_user(),
                     uid=self.get_current_user_id())
@@ -323,17 +323,18 @@ class ReportHandler(BaseHandler):
 
         # user amqp to generate pdf => alert user pdf is ready or send it to his email (might be better)
 
-        reportServiceClient = ReportServiceClient()
-        projectReport = reportServiceClient.call_generate_project_report(pid)
-        #s = ReportService()
+        #reportServiceClient = ReportServiceClient()
+        #projectReport = reportServiceClient.call_generate_project_report(pid)
+        s = ReportService()
         #projectReport = s.createReportForProject(pid)
+        s.createReportForProjectPDF(pid)
 
         self.render("reports.html",
                     username=self.get_current_user(),
                     uid=self.get_current_user_id(),
                     projects=projects,
                     pid=pid,
-                    projectReport=projectReport,
+                    projectReport=1,
                     case1=case1,
                     case2=case2)
 

@@ -15,7 +15,7 @@ def on_request(ch, method, props, body):
 
     print " [!] Generating report for project with pid =%s"  % (pid,)
     service = ReportService()
-    response = service.createReportForProject(pid)
+    response = service.createReportForProjectPDF(pid)
 
     ch.basic_publish(exchange='',
                      routing_key=props.reply_to,
