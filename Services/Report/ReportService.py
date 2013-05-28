@@ -4,9 +4,25 @@ from collections import Counter
 from Services.Utils.TimeConvertService import TimeConvertService
 from time import sleep
 from fpdf import FPDF
+import pika
 
 
 class ReportService(object):
+    def generatePDFAndSendTo(self, pid, toAddress):
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(
+            host='localhost'))
+        self.channel = self.connection.channel()
+        self.channel.queue_declare(queue='report_queue', durable=True)
+
+        self.channel.basic_publish(exchange='',
+                                   routing_key='report_queue',
+                                   body=str(pid),
+                                   properties=pika.BasicProperties(
+                                       delivery_mode=2, #persistent messages
+                                   ))
+        self.connection.close()
+        return True
+
     def createReportForProject(self, pid):
         if pid == 0 or pid is None:
             return ''
@@ -33,7 +49,10 @@ class ReportService(object):
         for event in projectHistory:
             users.append(event.user.username)
         # get fist element
-        activeUser = Counter(users).most_common(1)[0][0]
+        try:
+            activeUser = Counter(users).most_common(1)[0][0]
+        except IndexError:
+            activeUser = "andrei"
         return {
             'pid': pid,
             'title': project.title,
@@ -73,5 +92,4 @@ class ReportService(object):
         pdf.multi_cell(0, 5, 'Most active user is: ' + str(data['mostActive']))
         pdf.multi_cell(0, 5, 'Total time logged: ' + str(data['timeLogged']))
         pdf.multi_cell(0, 5, 'Time remaining for tasks: ' + str(data['timeRemaining']))
-        sleep(2)
-        pdf.output('generated_reports/project_' + pid + '_report.pdf', 'F')
+        pdf.output('generated_reports/project_' + str(pid) + '_report.pdf', 'F')

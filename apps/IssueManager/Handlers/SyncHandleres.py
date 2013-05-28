@@ -10,6 +10,7 @@ from Services.Event.EventService import EventService
 from Services.Host.HostService import hostService
 from Services.Report.ReportServiceClient import ReportServiceClient
 from Services.Report.ReportService import ReportService
+from Services.Utils.EmailService import EmailService
 
 
 class BaseHandler(tornado.web.RequestHandler):
@@ -28,13 +29,6 @@ class BaseHandler(tornado.web.RequestHandler):
 class IndexHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
-        from Services.Utils.EmailService import EmailService
-        es = EmailService()
-        es.setTo("buhaibogdan@yahoo.com")
-        es.setBody("just some text for test here")
-        es.setSubject("Test")
-        es.attachProject(1)
-        es.send()
         self.render("index.html",
                     username=self.get_current_user(),
                     uid=self.get_current_user_id())
@@ -297,24 +291,40 @@ class ReportHandler(BaseHandler):
         case = self.get_argument('case', None)
         case1 = 0
         case2 = 0
-        if test == 1 or test == '1':
+        if False and (test == 1 or test == '1'):
             import time
+
             # case 1:
             # default
+            s = ReportService()
             start = time.time()
-
+            '''
             for i in range(0, 20):
                 s = ReportService()
-                projectReport = s.createReportForProject(pid)
+                projectReport = s.createReportForProject(pid)'''
+
+            for i in range(0,5):
+                s.createReportForProjectPDF(1)
+                es = EmailService()
+                es.setTo("buhaibogdan@yahoo.com")
+                es.setBody("just some text for test here")
+                es.setSubject("Test")
+                es.attachProject(1)
+                es.send()
+
             finish = time.time()
-            case1 = finish-start
+            case1 = finish - start
 
             # case 2:
             # rabbitmq with n workers
             start = time.time()
+            '''
             for i in range(0, 20):
                 reportServiceClient = ReportServiceClient()
                 projectReport = reportServiceClient.call_generate_project_report(pid)
+            '''
+            for i in range(0,5):
+                s.generatePDFAndSendTo(1, "ceva")
             finish = time.time()
             case2 = finish - start
 
@@ -339,3 +349,11 @@ class ReportHandler(BaseHandler):
                     case1=case1,
                     case2=case2)
 
+    def post(self):
+        pid = self.get_argument('pid')
+        reportService = ReportService()
+        if reportService.generatePDFAndSendTo(pid, 'me'):
+            self.set_status(200)
+        else:
+            self.set_status(404)
+        self.finish()

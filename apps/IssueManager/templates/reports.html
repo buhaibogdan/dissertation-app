@@ -1,4 +1,7 @@
 {% extends "main.html" %}
+{% block page_scripts %}
+<script src="{{static_url('js/reports.js')}}" type="text/javascript"></script>
+{% end %}
 {% block nav%}
 <nav>
     <div class="navbar">
@@ -20,18 +23,15 @@
 {% block content %}
 <div>Select a project for more specific information.</div>
 {% module ProjectSelectModule(projects, 'projects_list', pid) %}
-<p>Project name</p>
-        <ul class="project-report">
-            <li>Number of tasks <span id="nr_tasks">5</span></li>
-            <li>Closed tasks <span id="nr_closed_tasks">3</span></li>
-            <li>Tasks in progress <span id="nr_tasks_in_progress">2</span></li>
-            <li>Tasks to do <span id="nr_tasks_to_do">2</span></li>
-            <li>Number of bugs <span id="nr_bugs">1</span></li>
-            <li>Most active user <span id="most_active_user">bb</span></li>
-            <li>Time logged <span id="time_logged">2w</span></li>
-            <li>Time remaining <span id="time_remaining">3d</span></li>
-        </ul>
-
-        <p>Case 1 seconds: {{case1}}</p>
-        <p>Case 2 seconds: {{case2}}</p>
+<button class="btn-info w190 display-block" id="report_generate">Generate pdf on my email</button>
+        <p class="hidden" id="report_failed">
+            The report could not be generated at this time. Please try again later or contact the admin.
+        </p>
+        <p class="hidden" id="report_send">
+            The report is being generated and send to your registered email address.
+        </p>
+<div class="hidden">
+    <p>Case 1 seconds: {{case1}}</p>
+    <p>Case 2 seconds: {{case2}}</p>
+</div>
 {% end %}

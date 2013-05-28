@@ -47,14 +47,13 @@ class EmailService(object):
         self.msg['To'] = 'buhaibogdan@yahoo.com'
 
         # This is the textual part:
-        part = MIMEText("Hello, \r\n This is a system generated report as requested. "
-                        "If you did not request it, please ignore it. \r\n IssueManager System")
+        part = MIMEText("Hello, \r\n\r\n \tThis is a system generated report as requested. "
+                        "If you did not request it, please ignore it. \r\n\r\n IssueManager System")
         self.msg.attach(part)
-
         # This is the binary part(The Attachment):
         part = MIMEApplication(open("/home/bb/PycharmProjects/dissertation-app/Services/Report/" +
-                                    "generated_reports/project_1_report.pdf", "rb").read())
-        part.add_header('Content-Disposition', 'attachment', filename="report_project_1.pdf")
+                                    "generated_reports/project_" + str(pid) + "_report.pdf", "rb").read())
+        part.add_header('Content-Disposition', 'attachment', filename="report_project_" + str(pid) + ".pdf")
         self.msg.attach(part)
 
     def send(self):

@@ -180,3 +180,10 @@ section .blue-background{
 .float-left {
     float: left;
 }
+
+.w190 {
+    width:190px;
+}
+.display-block{
+    display: block;
+}
