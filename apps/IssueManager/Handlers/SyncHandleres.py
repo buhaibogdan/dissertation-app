@@ -30,10 +30,11 @@ class IndexHandler(BaseHandler):
     def get(self):
         from Services.Utils.EmailService import EmailService
         es = EmailService()
-        #es.setTo("buhaibogdan@yahoo.com")
-        #es.setBody("just some text for test here")
-        #es.setSubject("Test")
-        #es.send()
+        es.setTo("buhaibogdan@yahoo.com")
+        es.setBody("just some text for test here")
+        es.setSubject("Test")
+        es.attachProject(1)
+        es.send()
         self.render("index.html",
                     username=self.get_current_user(),
                     uid=self.get_current_user_id())
