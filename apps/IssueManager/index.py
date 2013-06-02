@@ -33,8 +33,7 @@ class Application(tornado.web.Application):
                     (r"/issue/(\d+)?_xsrf=(\w+)",   SyncHandleres.IssueHandler),
                     (r"/issue/(\d+)/time",          SyncHandleres.IssueHandler),
                     (r"/history",                   AsyncHandlers.HistoryHandler),
-                    (r"/history/user/(\d+)",        AsyncHandlers.UserHistoryHandler),
-                    (r"/history/project/(\d+)",     AsyncHandlers.ProjectHistoryHandler),
+                    (r"/historySync",               AsyncHandlers.HistoryHandlerSync),
                     (r"/users$",                    SyncHandleres.UserHandler),
                     (r"/users/(\d+)",               SyncHandleres.UserHandler),
                     (r"/reports",                   SyncHandleres.ReportHandler)]

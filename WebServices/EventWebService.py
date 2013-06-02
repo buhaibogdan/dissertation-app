@@ -26,31 +26,23 @@ class Application(tornado.web.Application):
 
 
 class BaseHandler(tornado.web.RequestHandler):
-    '''@property
-    def userService(self):
-        return UserService(UserDAO())
-
-    @property
-    def projectService(self):
-        return ProjectService(ProjectDAO())
-
-    @property
-    def userProjectService(self):
-        return UserProjectService()
-
-    @property
-    def userProjectService(self):
-        return UserProjectService()'''
-
     @property
     def historyService(self):
         return HistoryService()
 
 
 class IndexHandler(BaseHandler):
+    @tornado.web.asynchronous
     def get(self):
+        tornado.ioloop.IOLoop.instance().add_timeout(
+            tornado.ioloop.IOLoop.instance().time() + 0.5,
+            callback=self.on_call
+        )
+
+    def on_call(self):
         allHistory = self.historyService.getHistory()
         self.write(self.historyService.convertToJson(allHistory))
+        self.finish()
 
 
 class UserEvent(BaseHandler):
