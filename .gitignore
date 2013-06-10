@@ -1,2 +1,4 @@
 /.idea/*
-/conf/config.py
+/conf/conf.py
+/conf/conf.pyc
+*.pyc
