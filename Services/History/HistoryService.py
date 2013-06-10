@@ -2,6 +2,7 @@ from HistoryEntity import HistoryEntity
 from HistoryDAO import HistoryDAO
 import pika
 import json
+from Services.Log.LogService import logService
 
 
 class HistoryService(object):
@@ -64,7 +65,8 @@ class HistoryService(object):
                     'message': h.message
                 })
         except AttributeError:
-            return '' #TODO: logger
+            logService.log_error('[HistoryService] Could not convert event list to json.')
+            return ''
 
         return json.dumps(jsonHistory)
 
@@ -84,6 +86,9 @@ class HistoryService(object):
         self.channel.basic_publish(exchange='history',
                                    routing_key='history.emails',
                                    body=emailDetails)
+
+
+
 
     def __del__(self):
         try:

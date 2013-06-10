@@ -42,7 +42,9 @@ class LogDB(object):
         return self.__getLog(3)
 
     def __getLog(self, type):
-        return self.cursor.execute("""SELECT id, details, date FROM log WHERE type=?""", (type, )).fetchall()
+        return self.cursor.execute(
+            """SELECT id, details, date FROM log WHERE type=? ORDER BY date DESC""",
+            (type, )).fetchall()
 
     def insertError(self, message):
         a = self.__insertLog(message, 1)

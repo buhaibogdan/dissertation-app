@@ -9,6 +9,8 @@ import pika
 
 class ReportService(object):
     def generatePDFAndSendTo(self, pid, toAddress):
+        if not pid or pid == '0':
+            return False
         self.connection = pika.BlockingConnection(pika.ConnectionParameters(
             host='localhost'))
         self.channel = self.connection.channel()
@@ -18,7 +20,7 @@ class ReportService(object):
                                    routing_key='report_queue',
                                    body=str(pid),
                                    properties=pika.BasicProperties(
-                                       delivery_mode=2, #persistent messages
+                                       delivery_mode=2,  # persistent messages
                                    ))
         self.connection.close()
         return True

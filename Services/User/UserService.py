@@ -1,4 +1,5 @@
 from UserEntity import UserEntity
+from UserPreferenceEntity import UserPreferenceEntity
 import json
 from Services.Log.LogService import logService
 import datetime

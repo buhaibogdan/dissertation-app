@@ -26,22 +26,6 @@ class Application(tornado.web.Application):
 
 
 class BaseHandler(tornado.web.RequestHandler):
-    '''@property
-    def userService(self):
-        return UserService(UserDAO())
-
-    @property
-    def projectService(self):
-        return ProjectService(ProjectDAO())
-
-    @property
-    def userProjectService(self):
-        return UserProjectService()
-
-    @property
-    def userProjectService(self):
-        return UserProjectService()'''
-
     @property
     def historyService(self):
         return HistoryService()

@@ -3,7 +3,6 @@ from Services.Project.ProjectService import ProjectService
 from Services.Project.ProjectDAO import ProjectDAO
 from Services.User.UserDAO import UserDAO
 from Services.User.UserService import UserService
-from Services.UserTask.UserTaskService import UserTaskService
 from Services.Task.TaskService import TaskService
 from Services.Task.TaskDAO import TaskDAO
 from Services.Log.LogService import logService
@@ -27,10 +26,6 @@ class HostService(object):
     @property
     def taskService(self):
         return TaskService(TaskDAO())
-
-    @property
-    def userTaskService(self):
-        return UserTaskService()
 
     @property
     def logService(self):

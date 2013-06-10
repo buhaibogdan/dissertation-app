@@ -43,13 +43,13 @@ WS.getAllHistory = function(){
     WS.allHistoryWS.onopen = function (evt) {
         WS.allHistoryIntervalId = setInterval(function(){
             WS.allHistoryWS.send('refresh');
-            $('#loading_activity_all').addClass('invisible');
+            $('#loading_activity_all').removeClass('invisible');
         }, 15000);
     };
     WS.allHistoryWS.onmessage = function(evt) {
         var events = $.parseJSON(evt.data);
         WS.displayHTML('all_activity_list', events);
-        $('#loading_activity_all').removeClass('invisible');
+        $('#loading_activity_all').addClass('invisible');
 
     };
     WS.allHistoryWS.onerror = function (evt) {

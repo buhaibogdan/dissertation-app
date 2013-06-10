@@ -24,6 +24,17 @@
 </header>
 <div class="main_content">
     {% block content %}
+    Type:
+    <select>
+        <option value="1">Error</option>
+        <option value="2">Warning</option>
+        <option value="3">Notice</option>
+    </select>
+     Start Date:
+    <input type="date">
+    End Date:
+    <input type="date">
+    <button class="btn-info">Filter</button>
     <div class="errors-container">
         {% for error in errors %}
             <div class="error">

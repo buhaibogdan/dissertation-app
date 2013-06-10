@@ -286,68 +286,11 @@ class ReportHandler(BaseHandler):
         projects = hostService.projectService.getProjects()
         pid = self.get_argument('pid', 0)
 
-        # speed test for scalability
-        test = self.get_argument('test', None)
-        case = self.get_argument('case', None)
-        case1 = 0
-        case2 = 0
-        if False and (test == 1 or test == '1'):
-            import time
-
-            # case 1:
-            # default
-            s = ReportService()
-            start = time.time()
-            '''
-            for i in range(0, 20):
-                s = ReportService()
-                projectReport = s.createReportForProject(pid)'''
-
-            for i in range(0,5):
-                s.createReportForProjectPDF(1)
-                es = EmailService()
-                es.setTo("buhaibogdan@yahoo.com")
-                es.setBody("just some text for test here")
-                es.setSubject("Test")
-                es.attachProject(1)
-                es.send()
-
-            finish = time.time()
-            case1 = finish - start
-
-            # case 2:
-            # rabbitmq with n workers
-            start = time.time()
-            '''
-            for i in range(0, 20):
-                reportServiceClient = ReportServiceClient()
-                projectReport = reportServiceClient.call_generate_project_report(pid)
-            '''
-            for i in range(0,5):
-                s.generatePDFAndSendTo(1, "ceva")
-            finish = time.time()
-            case2 = finish - start
-
-        # case 1 mai rapid decat case 2
-        # to note this
-        # also test with siege :D
-
-        # user amqp to generate pdf => alert user pdf is ready or send it to his email (might be better)
-
-        #reportServiceClient = ReportServiceClient()
-        #projectReport = reportServiceClient.call_generate_project_report(pid)
-        s = ReportService()
-        #projectReport = s.createReportForProject(pid)
-        s.createReportForProjectPDF(pid)
-
         self.render("reports.html",
                     username=self.get_current_user(),
                     uid=self.get_current_user_id(),
                     projects=projects,
-                    pid=pid,
-                    projectReport=1,
-                    case1=case1,
-                    case2=case2)
+                    pid=pid)
 
     def post(self):
         pid = self.get_argument('pid')
@@ -355,5 +298,6 @@ class ReportHandler(BaseHandler):
         if reportService.generatePDFAndSendTo(pid, 'me'):
             self.set_status(200)
         else:
+            hostService.logService.log_warning('Invalid pid supplied for report service to generate pdf.')
             self.set_status(404)
         self.finish()
