@@ -24,17 +24,26 @@
 </header>
 <div class="main_content">
     {% block content %}
-    Type:
-    <select>
-        <option value="1">Error</option>
-        <option value="2">Warning</option>
-        <option value="3">Notice</option>
-    </select>
-     Start Date:
-    <input type="date">
-    End Date:
-    <input type="date">
-    <button class="btn-info">Filter</button>
+    <div class="filters">
+        <div class="filter-elem">
+            <span>Type:</span>
+            <select id="log_type">
+                <option value="0">All</option>
+                <option value="1">Error</option>
+                <option value="2">Warning</option>
+                <option value="3">Notice</option>
+            </select>
+        </div>
+        <div class="filter-elem">
+            <span>Start Date:</span>
+            <input type="text" id="start_date" name="start-date" />
+        </div>
+        <div class="filter-elem">
+            <span>End Date:</span>
+            <input type="text" id="end_date" name="end-date" />
+        </div>
+        <button class="btn btn-primary" id="btn_filter">Filter</button>
+    </div>
     <div class="errors-container">
         {% for error in errors %}
             <div class="error">

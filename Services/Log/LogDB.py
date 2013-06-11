@@ -1,10 +1,11 @@
 import sqlite3
 import datetime
+from conf.conf import sqlite3_logDB
 
 
 class LogDB(object):
     def __init__(self):
-        self.conn = sqlite3.connect("/home/bb/PycharmProjects/dissertation-app/db/log.db")
+        self.conn = sqlite3.connect(sqlite3_logDB)
         self.cursor = self.conn.cursor()
 
         self.cursor.execute("""

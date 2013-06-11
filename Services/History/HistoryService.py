@@ -87,9 +87,6 @@ class HistoryService(object):
                                    routing_key='history.emails',
                                    body=emailDetails)
 
-
-
-
     def __del__(self):
         try:
             self.connection.close()

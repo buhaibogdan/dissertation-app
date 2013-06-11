@@ -168,3 +168,15 @@ section .blue-background{
     display: inline-block;
     width: 700px;
 }
+
+.filters select, .filters input{
+    width: 100px;
+}
+.filters span {
+    line-height: 20px;
+}
+
+.filter-elem {
+    display:inline-block;
+    padding: 5px;
+}

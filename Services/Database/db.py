@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from conf.conf import mysql_issueManagerDB
 
-engine = create_engine('mysql://root:bb@localhost:3306/issuemanager', convert_unicode=True, echo=True)
+engine = create_engine(mysql_issueManagerDB, convert_unicode=True, echo=True)
 db_session = scoped_session(sessionmaker(
     autocommit=False,
     autoflush=False,
