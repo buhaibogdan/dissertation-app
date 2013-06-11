@@ -1,5 +1,9 @@
+# just to init the DB with SQLALCHEMY
 from UserEntity import UserEntity
 from UserPreferenceEntity import UserPreferenceEntity
+from GroupPermision.GroupPermissionDAO import GroupPermissionDAO
+from UserGroup.UserGroupDAO import UserGroupDAO
+# end init
 import json
 from Services.Log.LogService import logService
 import datetime
