@@ -1,5 +1,5 @@
 from UserEntity import UserEntity
-from Services.Database.db import  db_session
+from Services.Database.db import db_session
 
 
 class UserDAO(object):
