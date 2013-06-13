@@ -5,11 +5,12 @@ from Services.Log.LogService import logService
 
 
 class GroupPermissionDAO(object):
-    def __init__(self):
-        pass
+    def __init__(self, db=None):
+        if not db:
+            self._db = db_session
 
     def getAllPermissionsForGroup(self, group_id):
-        perms = db_session.query(GroupPermissionEntity).filter(GroupPermissionEntity.group_id == group_id).all()
+        perms = self._db.query(GroupPermissionEntity).filter(GroupPermissionEntity.group_id == group_id).all()
         permissions = []
         for perm in perms:
             try:

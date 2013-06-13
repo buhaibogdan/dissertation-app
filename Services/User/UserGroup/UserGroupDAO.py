@@ -5,16 +5,17 @@ from Services.Log.LogService import logService
 
 
 class UserGroupDAO(object):
-    def __init__(self):
-        pass
+    def __init__(self, db=None):
+        if not db:
+            self._db = db_session
 
-    def getGroupsForUser(self, uid):
-        userGroups = db_session.query(UserGroupEntity).filter(UserGroupEntity.uid == uid).all()
+    def getUserGroups(self, uid):
+        userGroups = self._db.query(UserGroupEntity).filter(UserGroupEntity.uid == uid).all()
         groups = []
 
         for userGroup in userGroups:
             try:
-                groups.append(userGroup.group.name)
+                groups.append({userGroup.group_id: userGroup.group.name})
             except SQLAlchemyError:
                 logService.log_error('[SQL] Could not get group name for user in UserGroupDAO.')
 

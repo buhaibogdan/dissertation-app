@@ -3,6 +3,7 @@ from UserEntity import UserEntity
 from UserPreferenceEntity import UserPreferenceEntity
 from GroupPermision.GroupPermissionDAO import GroupPermissionDAO
 from UserGroup.UserGroupDAO import UserGroupDAO
+from Group.GroupDAO import GroupDAO
 # end init
 import json
 from Services.Log.LogService import logService
@@ -10,6 +11,14 @@ import datetime
 
 
 class UserService(object):
+
+    @property
+    def userGroupDAO(self):
+        return UserGroupDAO()
+
+    @property
+    def groupPermission(self):
+        return GroupPermissionDAO()
 
     def __init__(self, userDAO):
         self.__DAO = userDAO
@@ -57,3 +66,21 @@ class UserService(object):
             #log error
             logService.log_error('UserService: Could not convert list of users to json.')
         return json.dumps(usersJson)
+
+    def getUserGroups(self, uid):
+        groups = self.userGroupDAO.getUserGroups(uid)
+        group_list = []
+        for group in groups:
+            group_list.append(group.itervalues().next())
+        return group_list
+
+    def getPermissionsForUser(self, uid):
+        groups = self.userGroupDAO.getUserGroups(uid)
+
+        permissions = []
+        for group in groups:
+            group_id = group.iterkeys().next()
+            group_permissions = self.groupPermission.getAllPermissionsForGroup(group_id)
+            permissions.append(group_permissions)
+
+        return permissions

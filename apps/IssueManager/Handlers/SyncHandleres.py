@@ -46,6 +46,12 @@ class LoginHandler(BaseHandler):
         password = self.get_argument('password')
         user = hostService.userService.checkCredentials(username, password)
         if user is not False:
+            # my groups
+            g = hostService.userService.getUserGroups(self.get_current_user_id())
+            # my permissions
+            p = hostService.userService.getPermissionsForUser(self.get_current_user_id())
+
+
             self.set_secure_cookie("username", user.username)
             self.set_secure_cookie('uid', str(user.uid))
             self.redirect("/")
