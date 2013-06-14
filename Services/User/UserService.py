@@ -34,7 +34,7 @@ class UserService(object):
 
     def checkCredentials(self, username, password):
         user = self.__DAO.getUserByUsername(username)
-        if user.password != password:
+        if user is None or user.password != password:
             return False
         user.last_connect = datetime.datetime.now()
         return user

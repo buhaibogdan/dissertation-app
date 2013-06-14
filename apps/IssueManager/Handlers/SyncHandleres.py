@@ -1,6 +1,6 @@
 import requests
 import tornado.web
-
+import cPickle
 from apps.IssueManager.ui_modules.modules import UserLinkModule
 from apps.IssueManager.ui_modules.modules import IssueLogWorkModule
 from sqlalchemy.exc import SQLAlchemyError
@@ -21,9 +21,23 @@ class BaseHandler(tornado.web.RequestHandler):
     def get_current_user_id(self):
         return self.get_secure_cookie('uid')
 
+    def get_my_permissions(self):
+        return cPickle.loads(self.get_secure_cookie('permissions'))
+
+    def get_my_groups(self):
+        return cPickle.loads(self.get_secure_cookie('groups'))
+
     def check_xsrf_cookie(self):
         _xsrf = self.get_argument('_xsrf', '')
         return True
+
+    def render(self, template, **kwargs):
+        # add variables available to a bunch of templates
+        if template not in ['login.html']:
+            kwargs['my_permissions'] = self.get_my_permissions()
+            kwargs['my_groups'] = self.get_my_groups()
+
+        super(BaseHandler, self).render(template, **kwargs)
 
 
 class IndexHandler(BaseHandler):
@@ -47,11 +61,11 @@ class LoginHandler(BaseHandler):
         user = hostService.userService.checkCredentials(username, password)
         if user is not False:
             # my groups
-            g = hostService.userService.getUserGroups(self.get_current_user_id())
+            groups = hostService.userService.getUserGroups(user.uid)
+            self.set_secure_cookie('groups', cPickle.dumps(groups))
             # my permissions
-            p = hostService.userService.getPermissionsForUser(self.get_current_user_id())
-
-
+            permissions = hostService.userService.getPermissionsForUser(user.uid)
+            self.set_secure_cookie('permissions', cPickle.dumps(permissions))
             self.set_secure_cookie("username", user.username)
             self.set_secure_cookie('uid', str(user.uid))
             self.redirect("/")
@@ -71,6 +85,8 @@ class LogoutHandler(BaseHandler):
 class ProjectsHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self):
+        my_permissions = self.get_my_permissions()
+        my_groups = self.get_my_groups()
         projects = hostService.projectService.getProjects()
         users = hostService.userService.getUsers()
         usersInvolved = hostService.userProjectService.getUsersForProject(1)
@@ -89,7 +105,7 @@ class ProjectsHandler(BaseHandler):
         pOwnerId = self.get_argument('project_owner', None)
         pDescription = self.get_argument('project_description', '')
         pRelease = self.get_argument('project_release', None)
-        notify = self.get_argument('notify', False) #TODO: handle this
+        notify = self.get_argument('notify', False)  # TODO: handle this
         if pid is None:
             message = self.get_current_user() + " created a new project: " + pTitle + "."
             eventId = hostService.eventService.getEventByName(hostService.eventService.add_project).id
