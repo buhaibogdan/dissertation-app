@@ -11,10 +11,10 @@ from Services.Host.HostService import hostService
 from Services.Report.ReportServiceClient import ReportServiceClient
 from Services.Report.ReportService import ReportService
 from Services.Utils.EmailService import EmailService
+from Services.User.Permission.PermissionEntity import PermissionEntity
 
 
 class BaseHandler(tornado.web.RequestHandler):
-
     def get_current_user(self):
         return self.get_secure_cookie("username")
 
@@ -36,8 +36,21 @@ class BaseHandler(tornado.web.RequestHandler):
         if template not in ['login.html']:
             kwargs['my_permissions'] = self.get_my_permissions()
             kwargs['my_groups'] = self.get_my_groups()
+            if self.canIAccessUsers():
+                kwargs['accessUsers'] = True
+            else:
+                kwargs['accessUsers'] = False
 
         super(BaseHandler, self).render(template, **kwargs)
+
+    def canIAccessUsers(self):
+        if PermissionEntity.CAN_DO_ANYTHING in self.get_my_permissions() \
+            or PermissionEntity.CAN_ADD_USER in self.get_my_permissions() \
+            or PermissionEntity.CAN_REMOVE_USER in self.get_my_permissions() \
+            or PermissionEntity.CAN_EDIT_USER:
+            return True
+
+        return False
 
 
 class IndexHandler(BaseHandler):
@@ -130,7 +143,7 @@ class ProjectsHandler(BaseHandler):
         #send out emails
         if notify:
             hostService.historyService.sendEmails(self.get_current_user_id(), pid, self.get_current_user()
-                                                                            + " created a new project: " + pTitle + ".")
+                                                                                   + " created a new project: " + pTitle + ".")
 
 
 class ProjectHandler(BaseHandler):
@@ -210,7 +223,7 @@ class IssuesHandler(BaseHandler):
         #send out emails
         if notify:
             hostService.historyService.sendEmails(self.get_current_user_id(), pid, self.get_current_user()
-                                                                            + " created a new task.")
+                                                                                   + " created a new task.")
 
 
 class IssueHandler(BaseHandler):

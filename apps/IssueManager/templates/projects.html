@@ -12,6 +12,9 @@
                 <li class="active"><a href="#">Projects</a></li>
                 <li><a href="/issues">Issues</a></li>
                 <li><a href="/reports">Reports</a></li>
+                {% if accessUsers %}
+                <li><a href="/users>">Users</a></li>
+                {% end %}
             </ul>
             <form class="navbar-search pull-right">
                 <input type="text" class="search-query" placeholder="Search">
