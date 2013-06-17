@@ -44,7 +44,7 @@ class Application(tornado.web.Application):
                         ui_modules=apps.IssueManager.ui_modules.modules,
                         cookie_secret="bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=", #TODO: generate key
                         xsrf_cookies=True,
-                        login_url="/login"
+                        login_url="/login",
                         )
 
         tornado.web.Application.__init__(self, handlers, **settings)
@@ -54,6 +54,7 @@ if __name__ == "__main__":
     DB.init()
 
     tornado.options.parse_command_line()
-    http_server = tornado.httpserver.HTTPServer(Application())
+    http_server = tornado.httpserver.HTTPServer(
+        Application())
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
