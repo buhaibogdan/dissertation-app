@@ -13,7 +13,7 @@ from Handlers import SyncHandleres
 from Services.Database.db import *
 import apps.IssueManager.ui_modules.modules
 
-
+from conf.conf import certs
 from tornado.options import define, options
 
 
@@ -55,6 +55,8 @@ if __name__ == "__main__":
 
     tornado.options.parse_command_line()
     http_server = tornado.httpserver.HTTPServer(
-        Application())
+        Application(),
+        ssl_options={"certfile": certs['certfile'],
+                     "keyfile": certs['keyfile']})
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()

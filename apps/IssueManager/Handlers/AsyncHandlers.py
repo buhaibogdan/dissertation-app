@@ -25,8 +25,6 @@ class BaseAsyncHandler(tornado.websocket.WebSocketHandler):
 
 
 class HistoryHandler(BaseAsyncHandler):
-    def initialize(self):
-        pass
 
     def open(self):
         self.getAllHistory()
@@ -41,7 +39,8 @@ class HistoryHandler(BaseAsyncHandler):
     @tornado.gen.engine
     def getAllHistory(self, justNew=False):
         client = tornado.httpclient.AsyncHTTPClient()
-        response = yield tornado.gen.Task(client.fetch, webServicesAddress['event'])
+        request = tornado.httpclient.HTTPRequest(webServicesAddress['event'], validate_cert=False)
+        response = yield tornado.gen.Task(client.fetch, request)
         if justNew:
             eventsString = self.getNewHistoryEvents(response.body)
         else:
@@ -70,7 +69,8 @@ class UserHistoryHandler(BaseAsyncHandler):
     @tornado.gen.engine
     def getUserHistory(self, uid, justNew=False):
         client = tornado.httpclient.AsyncHTTPClient()
-        response = yield tornado.gen.Task(client.fetch, webServicesAddress['event'] + 'user/' + uid)
+        request = tornado.httpclient.HTTPRequest(webServicesAddress['event'] + 'user/' + uid, validate_cert=False)
+        response = yield tornado.gen.Task(client.fetch, request)
 
         if justNew:
             eventsString = self.getNewHistoryEvents(response.body)
@@ -99,7 +99,8 @@ class ProjectHistoryHandler(BaseAsyncHandler):
     @tornado.gen.engine
     def getProjectHistory(self, pid, justNew=False):
         client = tornado.httpclient.AsyncHTTPClient()
-        response = yield tornado.gen.Task(client.fetch, webServicesAddress['event'] + 'project/' + pid)
+        request = tornado.httpclient.HTTPRequest(webServicesAddress['event'] + 'project/' + pid, validate_cert=False)
+        response = yield tornado.gen.Task(client.fetch, request)
         if justNew:
             eventsString = self.getNewHistoryEvents(response.body)
         else:

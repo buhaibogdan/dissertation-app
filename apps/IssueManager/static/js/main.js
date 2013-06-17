@@ -2,9 +2,11 @@ $(document).ready(function(){
     WS.getAllHistory();
     WS.getMyHistory();
 
-    var pid;
-    if ( pid = $("#projects_list").val() ){
+    var pid = $("#projects_list").val();
+    if ( pid != 0 ){
         WS.getProjectHistory(pid);
+    } else {
+        WS.getProjectHistory(1);
     }
 })
 
@@ -15,7 +17,7 @@ $(document).ready(function(){
 /*|-------------------|*/
 WS = {} || WS;
 
-WS.host  = 'ws://localhost:8000/history';
+WS.host  = 'wss://localhost:8000/history';
 
 WS.init = function(){
 

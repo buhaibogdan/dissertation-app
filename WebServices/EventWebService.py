@@ -13,6 +13,7 @@ from Services.User.UserDAO import UserDAO
 from tornado.options import define, options
 from Services.History.HistoryService import HistoryService
 define("port", default=8001, help="run on the given port", type=int)
+from conf.conf import certs_ws, certs
 
 
 class Application(tornado.web.Application):
@@ -51,6 +52,9 @@ class ProjectEvent(BaseHandler):
 
 if __name__ == "__main__":
     tornado.options.parse_command_line()
-    http_server = tornado.httpserver.HTTPServer(Application())
+    http_server = tornado.httpserver.HTTPServer(
+        Application(),
+        ssl_options={"certfile": certs['certfile'],
+                     "keyfile": certs['keyfile']})
     http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
