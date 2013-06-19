@@ -152,6 +152,10 @@ WS.getUserHistory = function(uid){
 };
 
 WS.displayHTML = function(elemId, events){
+    if (events.error){
+        $('<li />').html('An error occurred while retrieving these events.').prependTo('#'+elemId);
+    }
+
     var nrEvents = events.length;
     for (var i=0;i<nrEvents;i++){
         var ev = events[i];
